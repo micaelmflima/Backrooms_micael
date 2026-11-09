@@ -1,0 +1,12 @@
+{
+  "mode": "WebGL por software, 480x320, qualidade Leve",
+  "frames": 142,
+  "medianFrameMs": 50,
+  "p95FrameMs": 250,
+  "medianDrawCalls": 130,
+  "terrainBuilds": 3,
+  "maxBuildsPerFrame": 3,
+  "maxBuildMs": 1.2999999998137355,
+  "diagnostics": null,
+  "distance": 52.30499999999943
+}

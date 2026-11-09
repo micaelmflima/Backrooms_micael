@@ -1,0 +1,21 @@
+BACKROOMS ECHO
+
+1. Extraia todo o ZIP.
+2. Se o pacote inclui executavel, no Windows abra executavel/Backrooms-ECHO-1.1.1-Windows-Portatil.exe.
+3. Escolha Criar sala para jogar sozinho ou hospedar uma partida.
+4. O amigo escolhe Entrar e usa seu IP/URL e codigo da sala.
+
+Alternativa: instale Node.js LTS 22+ e abra iniciar.bat.
+Instrucoes completas, controles, firewall, VPN, ngrok e compilacao: README.md.
+Validacao e limites dos testes: docs/TESTES.md.
+O executavel foi compilado neste ambiente Linux; a execucao Windows deve ser conferida no seu PC.
+
+Novos controles: V alterna a camera. A cor e escolhida no lobby.
+Ao concluir um nivel, o host clica em Continuar ao proximo nivel.
+Arquivo unico de codigo: Backrooms-ECHO-Completo.cjs (Node 22+).
+
+UPDATE 1.1.1: PERSONAGEM no lobby abre a selecao de cinco modelos.
+O explorador original permanece disponivel. V mostra a terceira pessoa.
+Movimento e carregamento de chunks corrigidos. Med kits usam o ultimo GLB enviado.
+Detalhes, aplicacao do patch e teste manual: docs/UPDATE-1.1.1.md.
+Backup intacto: backups/Backrooms-ECHO-1.1.0-Codigo-fonte.zip.

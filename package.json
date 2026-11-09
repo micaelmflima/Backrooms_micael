@@ -1,0 +1,86 @@
+{
+  "name": "backrooms-echo",
+  "version": "1.1.1",
+  "description": "Horror 3D cooperativo para dois jogadores",
+  "type": "module",
+  "main": "electron/main.cjs",
+  "author": "Backrooms ECHO",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server/index.js --open",
+    "dev": "node --watch server/index.js --open",
+    "server": "node server/index.js",
+    "desktop": "electron .",
+    "build": "electron-builder --win nsis portable --x64",
+    "build:portable": "electron-builder --win portable --x64",
+    "build:linux": "electron-builder --linux AppImage --x64",
+    "build:mac": "electron-builder --mac dmg",
+    "test": "node --test tests/*.test.js",
+    "test:browser": "node tests/browser.mjs",
+    "test:combat": "node tests/combat-browser.mjs",
+    "test:campaign": "node tests/campaign-browser.mjs",
+    "test:performance": "node tests/performance-browser.mjs",
+    "bundle": "node scripts/bundle.mjs",
+    "test:models": "node tests/models-browser.mjs"
+  },
+  "dependencies": {
+    "express": "5.2.1",
+    "socket.io": "4.8.4",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "electron": "44.5.1",
+    "electron-builder": "26.15.3",
+    "socket.io-client": "4.8.4",
+    "playwright": "1.56.1"
+  },
+  "build": {
+    "appId": "games.backrooms.echo",
+    "productName": "Backrooms ECHO",
+    "asar": true,
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "files": [
+      "client/**/*",
+      "server/**/*",
+      "shared/**/*",
+      "electron/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "artifactName": "Backrooms-ECHO-${version}-Windows-Setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "Backrooms-ECHO-${version}-Windows-Portatil.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Game"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.games"
+    },
+    "artifactName": "Backrooms-ECHO-${version}-${os}-${arch}.${ext}"
+  }
+}

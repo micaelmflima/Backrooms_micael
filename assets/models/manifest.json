@@ -1,0 +1,152 @@
+[
+  {
+    "file": "assets/models/vergil/model.fbx",
+    "source": "vergil-dmc3/source/Vergil 4.fbx",
+    "sha256": "6a439a307cfd04162e073f450623be0b774c1ae6f11d2b7bbf4f3112cbafc612"
+  },
+  {
+    "file": "assets/models/vergil/textures/combined_image_8914660307-Photoroom.png",
+    "source": "vergil-dmc3/textures/combined_image_8914660307-Photoroom.png",
+    "sha256": "8554b2717c798509d739429c0a7e89fc9bcedc6886144bf2672ce33b7e151b3d"
+  },
+  {
+    "file": "assets/models/metal-sonic/model.fbx",
+    "source": "sonic-forces-metal-sonic/source/MetalSonic/MetalSonic.FBX",
+    "sha256": "c71af914c4c1721722de006ca6a8b02b024167950f7dc5ce6d1a4cca7d1de51a"
+  },
+  {
+    "file": "assets/models/metal-sonic/textures/enm_metalsonic_eye_ems.png",
+    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_eye_ems.png",
+    "sha256": "f25cf901894ab3b637a6ef9a8e6006f50cf2079315465ddc37e0e1919d33bc8b"
+  },
+  {
+    "file": "assets/models/metal-sonic/textures/enm_metalsonic_body_prm_B.png",
+    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_body_prm_B.png",
+    "sha256": "76ed44d4a3500fd8f618caf60f5212fe01b4a4bc52e87b36aae9c39e52836fd5"
+  },
+  {
+    "file": "assets/models/metal-sonic/textures/enm_metalsonic_body_prm_G.png",
+    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_body_prm_G.png",
+    "sha256": "eebe4a4635a3149b77374f684a40da94b416a6df1fa12bfe657b1bc38a3d478b"
+  },
+  {
+    "file": "assets/models/metal-sonic/textures/enm_metalsonic_body_alb.png",
+    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_body_alb.png",
+    "sha256": "c05fe42ed39e685cb3e49ef92dc0b18e8ab86703ffb0f6fe40263ee34556d256"
+  },
+  {
+    "file": "assets/models/metal-sonic/textures/enm_metalsonic_body_nrm.png",
+    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_body_nrm.png",
+    "sha256": "04c8598c04026dd3d50edc9e2a8f9d599d4d56520be08fb5fbc4be58588dff48"
+  },
+  {
+    "file": "assets/models/metal-sonic/textures/enm_metalsonic_body_prm_R.png",
+    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_body_prm_R.png",
+    "sha256": "d6dbe20b3cc682d0be17634b2f8f4a5f8bcf868eddff93dbf2de3ad3adea1f13"
+  },
+  {
+    "file": "assets/models/metal-sonic/textures/enm_metalsonic_body_fal.png",
+    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_body_fal.png",
+    "sha256": "93d5dbf7b6fb7145d499db4fd1d681e4a70d9317c2392d4416a1e5f7adc543c0"
+  },
+  {
+    "file": "assets/models/fenomeno/model.fbx",
+    "source": "fenomeno/source/Fenomeno.fbx",
+    "sha256": "a467e58bd86a08baf1b9e93c6e84e8856787db0769f4976fa95ecc6bc57238ce"
+  },
+  {
+    "file": "assets/models/fenomeno/textures/tex_chr1127_00_face_diff.png",
+    "source": "fenomeno/textures/tex_chr1127_00_face_diff.png",
+    "sha256": "728f13dc83b1c2669438806783fa55b507b6b01cdf201da72c0609a960a56f96"
+  },
+  {
+    "file": "assets/models/fenomeno/textures/eyesbump1.png",
+    "source": "fenomeno/textures/eyesbump1.png",
+    "sha256": "81d815ce9b8f246fba00162a7ceec54e3ca6aeb3863b22b45d87d8db26608805"
+  },
+  {
+    "file": "assets/models/fenomeno/textures/tex_tail0001_00_1127_diff.png",
+    "source": "fenomeno/textures/tex_tail0001_00_1127_diff.png",
+    "sha256": "54a3865aef8e520926381806bb67dcdbfc2e626a4640502ef3fde0134964f3c2"
+  },
+  {
+    "file": "assets/models/fenomeno/textures/tex_chr1127_00_eye0.png",
+    "source": "fenomeno/textures/tex_chr1127_00_eye0.png",
+    "sha256": "419292182f81de081975557872a3c7479814a1c109cd67764375e3a5077ea71d"
+  },
+  {
+    "file": "assets/models/fenomeno/textures/tex_bdy1127_00_diff.png",
+    "source": "fenomeno/textures/tex_bdy1127_00_diff.png",
+    "sha256": "8091aa96eff9f5fd8a82a8f036606dad9bfb2499dd07ca624ef1fefabaec1e0a"
+  },
+  {
+    "file": "assets/models/fenomeno/textures/tex_chr1127_00_hair_shad_c.png",
+    "source": "fenomeno/textures/tex_chr1127_00_hair_shad_c.png",
+    "sha256": "9fc343757253eeb0c9ded8f220bc149a24f3618c2267076aeec10aa31b09d526"
+  },
+  {
+    "file": "assets/models/agnes/model.fbx",
+    "source": "agnes-tachyon-uma-musume(1)/source/1032_Agnes Tachyon.fbx",
+    "sha256": "299e86d92035a72b03ccc4c4d74d7a6b34d19da61dfe82f42bdbd783c4590230"
+  },
+  {
+    "file": "assets/models/agnes/textures/tex_chr1032_00_eye0.png",
+    "source": "agnes-tachyon-uma-musume(1)/textures/tex_chr1032_00_eye0.png",
+    "sha256": "2acf1165635f31e6e792255b93ddd3623ca262d10ae647af4a0a0b024999d052"
+  },
+  {
+    "file": "assets/models/agnes/textures/tex_tail0001_00_1032_shad_c.png",
+    "source": "agnes-tachyon-uma-musume(1)/textures/tex_tail0001_00_1032_shad_c.png",
+    "sha256": "4edfd8fb3aaf21661e2c7b34e1485df9c12ab78632541111627685a486a82a9d"
+  },
+  {
+    "file": "assets/models/agnes/textures/tex_bdy1032_00_shad_c.png",
+    "source": "agnes-tachyon-uma-musume(1)/textures/tex_bdy1032_00_shad_c.png",
+    "sha256": "5f42c0043edabe66f1b62a1904173170b59d922f19d97160f537249677ef8d1f"
+  },
+  {
+    "file": "assets/models/agnes/textures/tex_chr1032_00_face_diff.png",
+    "source": "agnes-tachyon-uma-musume(1)/textures/tex_chr1032_00_face_diff.png",
+    "sha256": "e92ec0c7ad55f1e453cfc6e9b8aba0de56d3fb85fccbd06b8e1b687d495ac2d3"
+  },
+  {
+    "file": "assets/models/agnes/textures/tex_tail0001_00_1032_diff.png",
+    "source": "agnes-tachyon-uma-musume(1)/textures/tex_tail0001_00_1032_diff.png",
+    "sha256": "5449113d387b05eafa624b75bc4c81d1bd8107cca867aca6f1f2818c9c591cec"
+  },
+  {
+    "file": "assets/models/agnes/textures/tex_chr1032_00_hair_diff.png",
+    "source": "agnes-tachyon-uma-musume(1)/textures/tex_chr1032_00_hair_diff.png",
+    "sha256": "3d67485d7813e18afb558f692e570186e6d806593e4929f945962d417fbf186b"
+  },
+  {
+    "file": "assets/models/agnes/textures/tex_chr1032_00_face_shad_c.png",
+    "source": "agnes-tachyon-uma-musume(1)/textures/tex_chr1032_00_face_shad_c.png",
+    "sha256": "5b1fb30dc115a9a02cf101614ab82e11e99bb6633e99cb228f01b416e3c0c359"
+  },
+  {
+    "file": "assets/models/agnes/textures/tex_chr1032_00_hair_shad_c.png",
+    "source": "agnes-tachyon-uma-musume(1)/textures/tex_chr1032_00_hair_shad_c.png",
+    "sha256": "d4d0cdbdc10c5db8439a33b27737d5fe3616b874c62075927946d963cbd224b2"
+  },
+  {
+    "file": "assets/models/agnes/textures/tex_bdy1032_00_diff.png",
+    "source": "agnes-tachyon-uma-musume(1)/textures/tex_bdy1032_00_diff.png",
+    "sha256": "52c57089fdad3a6abd1ba9037ca3552ccc7c645f4315def629596e466fc40d1f"
+  },
+  {
+    "file": "assets/models/medkit/model.glb",
+    "source": "med-kit/source/Med-kit .glb",
+    "sha256": "9d96e252affbe689f7a6536d150f08eee7c8b054358af6f550f68e29827583e4"
+  },
+  {
+    "file": "assets/models/medkit/textures/Snow007A_2K-JPG_Color_1.jpeg",
+    "source": "med-kit/textures/Snow007A_2K-JPG_Color_1.jpeg",
+    "sha256": "f48e088b57f6cef6bdfde104e5a082c9a54826fe536f2aa39c6d98fbfa91abae"
+  },
+  {
+    "file": "assets/models/medkit/textures/Snow007A_2K-JPG_NormalGL_0.jpeg",
+    "source": "med-kit/textures/Snow007A_2K-JPG_NormalGL_0.jpeg",
+    "sha256": "d40fb815a1ddf74fa392668d1ed230d4b837cee2852e2d794e02a58c6a16fb7b"
+  }
+]

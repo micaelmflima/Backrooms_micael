@@ -1,0 +1,37 @@
+{
+  "mode": "WebGL por software, 480x320, qualidade Leve",
+  "frames": 151,
+  "medianFrameMs": 66.69999999999982,
+  "p95FrameMs": 133.30000000000018,
+  "medianDrawCalls": 64,
+  "terrainBuilds": 3,
+  "maxBuildsPerFrame": 1,
+  "maxBuildMs": 0.2999999998137355,
+  "diagnostics": {
+    "fps": 16.363636363636363,
+    "p95FrameMs": 133.3000030517578,
+    "drawCalls": 66,
+    "geometries": 21,
+    "textures": 12,
+    "chunks": 12,
+    "chunkCapacity": 16,
+    "build": {
+      "builds": 12,
+      "maxBuildMs": 0.39999999990686774,
+      "buildsThisFrame": 0,
+      "lightingUpdates": 58,
+      "capacity": 16
+    },
+    "pointLights": 3,
+    "shadowLights": 0,
+    "actorPool": 6,
+    "projectileCapacity": 24,
+    "projectiles": 0,
+    "thirdPerson": false,
+    "level": 0,
+    "transitioning": false,
+    "snapshotTransition": false,
+    "connected": true
+  },
+  "distance": 51.176666666666115
+}

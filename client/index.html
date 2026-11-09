@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>BACKROOMS — ECHO</title>
+    <link rel="icon" href="/assets/icon.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/vendor/three/build/three.module.js",
+          "three/addons/": "/vendor/three/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="game" aria-label="Jogo 3D em primeira pessoa"></canvas>
+    <div id="vignette"></div>
+    <div id="damage"></div>
+    <main id="lobby" class="screen">
+      <header class="topline">
+        <span class="mark">E / 00</span
+        ><span>REGISTRO DE EXPLORAÇÃO · COOPERATIVO</span
+        ><span class="rec">● REC</span>
+      </header>
+      <section class="intro">
+        <div class="eyebrow">NÍVEL ZERO / TRANSMISSÃO PERDIDA</div>
+        <h1>BACK<br />ROOMS<span>E C H O</span></h1>
+        <p>O zumbido nunca para.<br />Encontre o sinal. Não fique para trás.</p>
+        <div class="tags">
+          <span>1—2 EXPLORADORES</span><span>MUNDO PROCEDURAL</span>
+        </div>
+      </section>
+      <section class="panel lobby-panel">
+        <div class="panel-head">
+          ESTABELECER CONEXÃO <span class="dot"></span>
+        </div>
+        <div class="tabs">
+          <button id="host-tab" class="selected">CRIAR SALA</button
+          ><button id="join-tab">ENTRAR</button>
+        </div>
+        <label
+          >SEU NOME<input
+            id="name"
+            maxlength="24"
+            value="Explorador"
+            autocomplete="nickname"
+        /></label>
+        <label>COR DO EXPLORADOR<input type="color" id="player-color" value="#d95948" /></label>
+        <!-- UPDATE: o explorador original continua sendo o padrão. -->
+        <button id="choose-character">PERSONAGEM · <b id="selected-character">Explorador original</b> ↗</button>
+        <div id="host-fields">
+          <label
+            >SEED <small>opcional</small
+            ><input
+              id="seed"
+              maxlength="40"
+              placeholder="Vazio = novo labirinto"
+          /></label>
+        </div>
+        <div id="join-fields" hidden>
+          <label
+            >ENDEREÇO DO HOST<input
+              id="address"
+              placeholder="192.168.1.10:3000 ou URL HTTPS"
+              spellcheck="false" /></label
+          ><label
+            >CÓDIGO <small>opcional se houver só uma sala</small
+            ><input id="room" maxlength="6" placeholder="A1B2C3"
+          /></label>
+          <p class="hint">
+            O código seleciona a sala no servidor acima. Use o IP ou URL do seu
+            amigo.
+          </p>
+        </div>
+        <button id="connect" class="primary">
+          INICIAR EXPLORAÇÃO <span>↗</span>
+        </button>
+        <p id="error" role="alert"></p>
+        <div class="preferences">
+          <label
+            >QUALIDADE<select id="quality">
+              <option value="high">Alta · bloom e sombras</option>
+              <option value="low">Leve · desempenho</option>
+            </select></label
+          ><label
+            >VOLUME<input type="range" id="volume" min="0" max="100" value="65"
+          /></label>
+        </div>
+        <details>
+          <summary>CONTROLES E AJUSTES</summary>
+          <p>
+            WASD mover · Mouse olhar · Shift correr<br />Espaço pular · V câmera · Clique
+            atirar · R recarregar<br />E interagir/reanimar · F lanterna · Esc
+            menu
+          </p>
+          <label
+            >SENSIBILIDADE<input
+              type="range"
+              id="sensitivity"
+              min="1"
+              max="10"
+              value="4" /></label
+          ><label
+            ><input id="reduced" type="checkbox" /> Reduzir flashes e
+            granulado</label
+          >
+        </details>
+      </section>
+      <footer>
+        <span>ESCUTE. EXPLORE. SOBREVIVA.</span
+        ><span>BUILD 1.1.1 / ECHO PROTOCOL</span>
+      </footer>
+    </main>
+    <section id="hud" hidden>
+      <div class="hud-top">
+        <div><b id="level-label">LEVEL 00</b><span id="sector">SETOR 0 : 0</span></div>
+        <div class="connection">
+          <span id="net">CONECTADO</span><span id="ping">— ms</span><span id="fps">— FPS</span
+          ><button id="copy">SALA <b id="code"></b> ⧉</button>
+        </div>
+      </div>
+      <div id="objective">
+        <small>OBJETIVO / RESTAURAR O SINAL</small
+        ><strong id="objective-text">ATIVE OS RELÉS</strong
+        ><span id="objective-distance"></span>
+        <div id="relay-marks"></div>
+      </div>
+      <div id="crosshair"><i></i><i></i><i></i><i></i></div>
+      <div id="hitmarker">×</div>
+      <div id="interact"></div>
+      <div id="notice" aria-live="polite"></div>
+      <div class="hud-bottom">
+        <div class="vitals">
+          <div class="meter-label">
+            <span>CONDIÇÃO</span><b id="health-text">100</b>
+          </div>
+          <div class="bar"><i id="health"></i></div>
+          <div class="meter-label small">
+            <span>FÔLEGO</span><span id="teammate">SOZINHO NO SINAL</span>
+          </div>
+          <div class="bar stamina"><i id="stamina"></i></div>
+        </div>
+        <div id="threat"></div>
+        <div class="ammo">
+          <small>PISTOLA / 9 MM</small>
+          <div>
+            <b id="ammo">12</b><span> / <span id="reserve">60</span></span>
+          </div>
+          <span id="reload-state">R · RECARREGAR</span>
+        </div>
+      </div>
+      <div id="help">
+        WASD MOVER &nbsp; SHIFT CORRER &nbsp; E INTERAGIR &nbsp; F LANTERNA
+        &nbsp; V CÂMERA &nbsp; ESC MENU
+      </div>
+    </section>
+    <section id="characters" class="modal" hidden aria-label="Seleção de personagem">
+      <div class="panel character-panel">
+        <div class="eyebrow">IDENTIDADE DO EXPLORADOR</div><h2>Escolha seu personagem.</h2>
+        <div class="character-layout"><div id="character-list"></div><canvas id="character-preview" aria-label="Prévia 3D do personagem"></canvas></div>
+        <p id="character-description" class="hint"></p>
+        <button id="character-confirm" class="primary" disabled>USAR PERSONAGEM ↗</button><button id="character-cancel">VOLTAR</button>
+      </div>
+    </section>
+    <section id="transition" class="modal" hidden>
+      <div class="panel"><div class="eyebrow">PASSAGEM LIBERADA</div><h2>Nível concluído.</h2><p id="next-level"></p><p id="transition-help">Aguardando passagem...</p><button id="advance-level" class="primary">CONTINUAR AO PRÓXIMO NÍVEL ↗</button></div>
+    </section>
+    <section id="pause" class="modal" hidden>
+      <div class="panel">
+        <div class="eyebrow">TRANSMISSÃO EM CURSO</div>
+        <h2>Você ainda está aqui.</h2>
+        <p>O mundo continua enquanto o menu está aberto.</p>
+        <button id="resume" class="primary">CONTINUAR ↗</button
+        ><button id="restart-pause">REINICIAR EXPEDIÇÃO</button
+        ><button id="leave">VOLTAR AO LOBBY</button>
+        <p id="invite" class="hint"></p>
+      </div>
+    </section>
+    <section id="end" class="modal" hidden>
+      <div class="panel">
+        <div class="eyebrow" id="end-eyebrow">SINAL INTERROMPIDO</div>
+        <h2 id="end-title">Você foi encontrado.</h2>
+        <p id="end-description"></p>
+        <button id="restart" class="primary">REINICIAR EXPEDIÇÃO ↗</button
+        ><button id="end-leave">VOLTAR AO LOBBY</button>
+      </div>
+    </section>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="/js/main.js"></script>
+  </body>
+</html>

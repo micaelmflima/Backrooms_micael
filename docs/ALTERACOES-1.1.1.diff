@@ -1,0 +1,2037 @@
+--- a/LEIA_PRIMEIRO.txt
++++ b/LEIA_PRIMEIRO.txt
+@@ -1,7 +1,7 @@
+ BACKROOMS ECHO
+ 
+ 1. Extraia todo o ZIP.
+-2. Se o pacote inclui executavel, no Windows abra executavel/Backrooms-ECHO-1.1.0-Windows-Portatil.exe.
++2. Se o pacote inclui executavel, no Windows abra executavel/Backrooms-ECHO-1.1.1-Windows-Portatil.exe.
+ 3. Escolha Criar sala para jogar sozinho ou hospedar uma partida.
+ 4. O amigo escolhe Entrar e usa seu IP/URL e codigo da sala.
+ 
+@@ -13,3 +13,9 @@
+ Novos controles: V alterna a camera. A cor e escolhida no lobby.
+ Ao concluir um nivel, o host clica em Continuar ao proximo nivel.
+ Arquivo unico de codigo: Backrooms-ECHO-Completo.cjs (Node 22+).
++
++UPDATE 1.1.1: PERSONAGEM no lobby abre a selecao de cinco modelos.
++O explorador original permanece disponivel. V mostra a terceira pessoa.
++Movimento e carregamento de chunks corrigidos. Med kits usam o ultimo GLB enviado.
++Detalhes, aplicacao do patch e teste manual: docs/UPDATE-1.1.1.md.
++Backup intacto: backups/Backrooms-ECHO-1.1.0-Codigo-fonte.zip.
+--- a/README.md
++++ b/README.md
+@@ -2,7 +2,7 @@
+ 
+ Horror 3D em primeira pessoa, solo ou cooperativo para **dois jogadores**. Evolução do jogo existente em Three.js, Node.js, Socket.IO e Electron. O original Python está preservado em `original/backrooms_3d/`.
+ 
+-**Versão 1.1.0 — evolução da versão revisada 1.0.1.** O mapa clássico, arma, áudio, controles, multiplayer, reconexão, suprimentos e reanimação foram preservados. Veja `docs/ATUALIZACAO-1.1.md` para alterações e desempenho.
++**Versão 1.1.1 — update incremental da versão 1.1.0.** O mapa clássico, arma, áudio, controles, multiplayer, reconexão, suprimentos e reanimação foram preservados. Veja `docs/ATUALIZACAO-1.1.md` para alterações e desempenho.
+ 
+ O pacote contém o projeto modular completo e **`Backrooms-ECHO-Completo.cjs`**, um arquivo único com todo o código embutido. Com Node instalado, `node Backrooms-ECHO-Completo.cjs` extrai sua própria cópia do projeto, instala as dependências do navegador se necessário e abre o jogo. O portátil Windows continua sendo a opção sem Node/terminal.
+ 
+@@ -10,7 +10,7 @@
+ 
+ Se você baixou o pacote com executável, extraia **todo o ZIP** e abra:
+ 
+-`executavel/Backrooms-ECHO-1.1.0-Windows-Portatil.exe`
++`executavel/Backrooms-ECHO-1.1.1-Windows-Portatil.exe`
+ 
+ Aguarde a extração inicial. O portátil inclui o servidor Node e as dependências: não precisa instalar Python, Node ou abrir terminal. Escolha **Criar sala**, digite seu nome e clique em **Iniciar exploração**. A sala já funciona sozinho; seu amigo pode entrar depois. O botão **Sala** copia o convite; **Esc** abre o menu.
+ 
+@@ -139,8 +139,8 @@
+ 
+ Ou abra **`gerar-exe.bat`**. Os downloads iniciais podem demorar. Os arquivos ficam em `dist/`:
+ 
+-- `Backrooms-ECHO-1.1.0-Windows-Setup.exe`: instalador com pasta e atalho.
+-- `Backrooms-ECHO-1.1.0-Windows-Portatil.exe`: executável portátil com tudo embutido.
++- `Backrooms-ECHO-1.1.1-Windows-Setup.exe`: instalador com pasta e atalho.
++- `Backrooms-ECHO-1.1.1-Windows-Portatil.exe`: executável portátil com tudo embutido.
+ 
+ Só o portátil: `npm run build:portable`. Testar o desktop antes de compilar: `npm run desktop`. As dependências usadas não exigem Visual Studio para esse build.
+ 
+@@ -195,3 +195,9 @@
+ Referências: [Three.js](https://threejs.org/docs/), [Socket.IO](https://socket.io/docs/v4/), [Electron](https://www.electronjs.org/docs/latest/tutorial/context-isolation), [electron-builder](https://www.electron.build/), [ngrok/WebSockets](https://ngrok.com/docs/using-ngrok-with/websockets), [Radmin VPN](https://www.radmin-vpn.com/help/).
+ 
+ O código novo usa licença MIT. Dependências mantêm suas licenças. Nenhuma licença nova é imposta ao protótipo original recebido.
++
++## Update 1.1.1 — movimento, personagens e med kits
++
++Atualização sobre a versão anterior, com backup completo em `backups/Backrooms-ECHO-1.1.0-Codigo-fonte.zip`. No lobby, **PERSONAGEM** escolhe o explorador original ou um dos quatro FBX enviados. **V** permite vê-los em terceira pessoa. A escolha é salva e sincronizada no multiplayer. Med kits usam o último modelo enviado (GLB com texturas embutidas), conservando as regras de cura e coleta.
++
++Aplicação do patch, causa dos saltos, lista dos arquivos e roteiro de testes: [docs/UPDATE-1.1.1.md](docs/UPDATE-1.1.1.md). Os arquivos e texturas recebidos foram preservados; os FBX não incluem clips, então as animações são geradas sobre seus rigs originais.
+--- a/assets/models/manifest.json
++++ b/assets/models/manifest.json
+@@ -0,0 +1,152 @@
++[
++  {
++    "file": "assets/models/vergil/model.fbx",
++    "source": "vergil-dmc3/source/Vergil 4.fbx",
++    "sha256": "6a439a307cfd04162e073f450623be0b774c1ae6f11d2b7bbf4f3112cbafc612"
++  },
++  {
++    "file": "assets/models/vergil/textures/combined_image_8914660307-Photoroom.png",
++    "source": "vergil-dmc3/textures/combined_image_8914660307-Photoroom.png",
++    "sha256": "8554b2717c798509d739429c0a7e89fc9bcedc6886144bf2672ce33b7e151b3d"
++  },
++  {
++    "file": "assets/models/metal-sonic/model.fbx",
++    "source": "sonic-forces-metal-sonic/source/MetalSonic/MetalSonic.FBX",
++    "sha256": "c71af914c4c1721722de006ca6a8b02b024167950f7dc5ce6d1a4cca7d1de51a"
++  },
++  {
++    "file": "assets/models/metal-sonic/textures/enm_metalsonic_eye_ems.png",
++    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_eye_ems.png",
++    "sha256": "f25cf901894ab3b637a6ef9a8e6006f50cf2079315465ddc37e0e1919d33bc8b"
++  },
++  {
++    "file": "assets/models/metal-sonic/textures/enm_metalsonic_body_prm_B.png",
++    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_body_prm_B.png",
++    "sha256": "76ed44d4a3500fd8f618caf60f5212fe01b4a4bc52e87b36aae9c39e52836fd5"
++  },
++  {
++    "file": "assets/models/metal-sonic/textures/enm_metalsonic_body_prm_G.png",
++    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_body_prm_G.png",
++    "sha256": "eebe4a4635a3149b77374f684a40da94b416a6df1fa12bfe657b1bc38a3d478b"
++  },
++  {
++    "file": "assets/models/metal-sonic/textures/enm_metalsonic_body_alb.png",
++    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_body_alb.png",
++    "sha256": "c05fe42ed39e685cb3e49ef92dc0b18e8ab86703ffb0f6fe40263ee34556d256"
++  },
++  {
++    "file": "assets/models/metal-sonic/textures/enm_metalsonic_body_nrm.png",
++    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_body_nrm.png",
++    "sha256": "04c8598c04026dd3d50edc9e2a8f9d599d4d56520be08fb5fbc4be58588dff48"
++  },
++  {
++    "file": "assets/models/metal-sonic/textures/enm_metalsonic_body_prm_R.png",
++    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_body_prm_R.png",
++    "sha256": "d6dbe20b3cc682d0be17634b2f8f4a5f8bcf868eddff93dbf2de3ad3adea1f13"
++  },
++  {
++    "file": "assets/models/metal-sonic/textures/enm_metalsonic_body_fal.png",
++    "source": "sonic-forces-metal-sonic/source/MetalSonic/enm_metalsonic_body_fal.png",
++    "sha256": "93d5dbf7b6fb7145d499db4fd1d681e4a70d9317c2392d4416a1e5f7adc543c0"
++  },
++  {
++    "file": "assets/models/fenomeno/model.fbx",
++    "source": "fenomeno/source/Fenomeno.fbx",
++    "sha256": "a467e58bd86a08baf1b9e93c6e84e8856787db0769f4976fa95ecc6bc57238ce"
++  },
++  {
++    "file": "assets/models/fenomeno/textures/tex_chr1127_00_face_diff.png",
++    "source": "fenomeno/textures/tex_chr1127_00_face_diff.png",
++    "sha256": "728f13dc83b1c2669438806783fa55b507b6b01cdf201da72c0609a960a56f96"
++  },
++  {
++    "file": "assets/models/fenomeno/textures/eyesbump1.png",
++    "source": "fenomeno/textures/eyesbump1.png",
++    "sha256": "81d815ce9b8f246fba00162a7ceec54e3ca6aeb3863b22b45d87d8db26608805"
++  },
++  {
++    "file": "assets/models/fenomeno/textures/tex_tail0001_00_1127_diff.png",
++    "source": "fenomeno/textures/tex_tail0001_00_1127_diff.png",
++    "sha256": "54a3865aef8e520926381806bb67dcdbfc2e626a4640502ef3fde0134964f3c2"
++  },
++  {
++    "file": "assets/models/fenomeno/textures/tex_chr1127_00_eye0.png",
++    "source": "fenomeno/textures/tex_chr1127_00_eye0.png",
++    "sha256": "419292182f81de081975557872a3c7479814a1c109cd67764375e3a5077ea71d"
++  },
++  {
++    "file": "assets/models/fenomeno/textures/tex_bdy1127_00_diff.png",
++    "source": "fenomeno/textures/tex_bdy1127_00_diff.png",
++    "sha256": "8091aa96eff9f5fd8a82a8f036606dad9bfb2499dd07ca624ef1fefabaec1e0a"
++  },
++  {
++    "file": "assets/models/fenomeno/textures/tex_chr1127_00_hair_shad_c.png",
++    "source": "fenomeno/textures/tex_chr1127_00_hair_shad_c.png",
++    "sha256": "9fc343757253eeb0c9ded8f220bc149a24f3618c2267076aeec10aa31b09d526"
++  },
++  {
++    "file": "assets/models/agnes/model.fbx",
++    "source": "agnes-tachyon-uma-musume(1)/source/1032_Agnes Tachyon.fbx",
++    "sha256": "299e86d92035a72b03ccc4c4d74d7a6b34d19da61dfe82f42bdbd783c4590230"
++  },
++  {
++    "file": "assets/models/agnes/textures/tex_chr1032_00_eye0.png",
++    "source": "agnes-tachyon-uma-musume(1)/textures/tex_chr1032_00_eye0.png",
++    "sha256": "2acf1165635f31e6e792255b93ddd3623ca262d10ae647af4a0a0b024999d052"
++  },
++  {
++    "file": "assets/models/agnes/textures/tex_tail0001_00_1032_shad_c.png",
++    "source": "agnes-tachyon-uma-musume(1)/textures/tex_tail0001_00_1032_shad_c.png",
++    "sha256": "4edfd8fb3aaf21661e2c7b34e1485df9c12ab78632541111627685a486a82a9d"
++  },
++  {
++    "file": "assets/models/agnes/textures/tex_bdy1032_00_shad_c.png",
++    "source": "agnes-tachyon-uma-musume(1)/textures/tex_bdy1032_00_shad_c.png",
++    "sha256": "5f42c0043edabe66f1b62a1904173170b59d922f19d97160f537249677ef8d1f"
++  },
++  {
++    "file": "assets/models/agnes/textures/tex_chr1032_00_face_diff.png",
++    "source": "agnes-tachyon-uma-musume(1)/textures/tex_chr1032_00_face_diff.png",
++    "sha256": "e92ec0c7ad55f1e453cfc6e9b8aba0de56d3fb85fccbd06b8e1b687d495ac2d3"
++  },
++  {
++    "file": "assets/models/agnes/textures/tex_tail0001_00_1032_diff.png",
++    "source": "agnes-tachyon-uma-musume(1)/textures/tex_tail0001_00_1032_diff.png",
++    "sha256": "5449113d387b05eafa624b75bc4c81d1bd8107cca867aca6f1f2818c9c591cec"
++  },
++  {
++    "file": "assets/models/agnes/textures/tex_chr1032_00_hair_diff.png",
++    "source": "agnes-tachyon-uma-musume(1)/textures/tex_chr1032_00_hair_diff.png",
++    "sha256": "3d67485d7813e18afb558f692e570186e6d806593e4929f945962d417fbf186b"
++  },
++  {
++    "file": "assets/models/agnes/textures/tex_chr1032_00_face_shad_c.png",
++    "source": "agnes-tachyon-uma-musume(1)/textures/tex_chr1032_00_face_shad_c.png",
++    "sha256": "5b1fb30dc115a9a02cf101614ab82e11e99bb6633e99cb228f01b416e3c0c359"
++  },
++  {
++    "file": "assets/models/agnes/textures/tex_chr1032_00_hair_shad_c.png",
++    "source": "agnes-tachyon-uma-musume(1)/textures/tex_chr1032_00_hair_shad_c.png",
++    "sha256": "d4d0cdbdc10c5db8439a33b27737d5fe3616b874c62075927946d963cbd224b2"
++  },
++  {
++    "file": "assets/models/agnes/textures/tex_bdy1032_00_diff.png",
++    "source": "agnes-tachyon-uma-musume(1)/textures/tex_bdy1032_00_diff.png",
++    "sha256": "52c57089fdad3a6abd1ba9037ca3552ccc7c645f4315def629596e466fc40d1f"
++  },
++  {
++    "file": "assets/models/medkit/model.glb",
++    "source": "med-kit/source/Med-kit .glb",
++    "sha256": "9d96e252affbe689f7a6536d150f08eee7c8b054358af6f550f68e29827583e4"
++  },
++  {
++    "file": "assets/models/medkit/textures/Snow007A_2K-JPG_Color_1.jpeg",
++    "source": "med-kit/textures/Snow007A_2K-JPG_Color_1.jpeg",
++    "sha256": "f48e088b57f6cef6bdfde104e5a082c9a54826fe536f2aa39c6d98fbfa91abae"
++  },
++  {
++    "file": "assets/models/medkit/textures/Snow007A_2K-JPG_NormalGL_0.jpeg",
++    "source": "med-kit/textures/Snow007A_2K-JPG_NormalGL_0.jpeg",
++    "sha256": "d40fb815a1ddf74fa392668d1ed230d4b837cee2852e2d794e02a58c6a16fb7b"
++  }
++]
+--- a/client/index.html
++++ b/client/index.html
+@@ -49,6 +49,8 @@
+             autocomplete="nickname"
+         /></label>
+         <label>COR DO EXPLORADOR<input type="color" id="player-color" value="#d95948" /></label>
++        <!-- UPDATE: o explorador original continua sendo o padrão. -->
++        <button id="choose-character">PERSONAGEM · <b id="selected-character">Explorador original</b> ↗</button>
+         <div id="host-fields">
+           <label
+             >SEED <small>opcional</small
+@@ -109,7 +111,7 @@
+       </section>
+       <footer>
+         <span>ESCUTE. EXPLORE. SOBREVIVA.</span
+-        ><span>BUILD 1.1.0 / ECHO PROTOCOL</span>
++        ><span>BUILD 1.1.1 / ECHO PROTOCOL</span>
+       </footer>
+     </main>
+     <section id="hud" hidden>
+@@ -155,6 +157,14 @@
+         &nbsp; V CÂMERA &nbsp; ESC MENU
+       </div>
+     </section>
++    <section id="characters" class="modal" hidden aria-label="Seleção de personagem">
++      <div class="panel character-panel">
++        <div class="eyebrow">IDENTIDADE DO EXPLORADOR</div><h2>Escolha seu personagem.</h2>
++        <div class="character-layout"><div id="character-list"></div><canvas id="character-preview" aria-label="Prévia 3D do personagem"></canvas></div>
++        <p id="character-description" class="hint"></p>
++        <button id="character-confirm" class="primary" disabled>USAR PERSONAGEM ↗</button><button id="character-cancel">VOLTAR</button>
++      </div>
++    </section>
+     <section id="transition" class="modal" hidden>
+       <div class="panel"><div class="eyebrow">PASSAGEM LIBERADA</div><h2>Nível concluído.</h2><p id="next-level"></p><p id="transition-help">Aguardando passagem...</p><button id="advance-level" class="primary">CONTINUAR AO PRÓXIMO NÍVEL ↗</button></div>
+     </section>
+--- a/client/js/character-menu.js
++++ b/client/js/character-menu.js
+@@ -0,0 +1,61 @@
++import * as T from "three";
++import { CHARACTERS, characterConfig } from "../../shared/characters.js";
++import { PlayerCharacters } from "./player-characters.js";
++// UPDATE: menu separado. O preview só renderiza enquanto estiver visível e
++// usa o MESMO modelo/rig do jogo. Escolha persistente não muda os controles.
++export class CharacterMenu {
++  constructor(onChoose, color) {
++    this.onChoose = onChoose; this.color = color; this.opened = false;
++    const $ = (id) => document.getElementById(id); this.$ = $;
++    try { this.selected = characterConfig(localStorage.getItem("echo-character")).id; } catch { this.selected = "capsule"; }
++    this.scene = new T.Scene(); this.scene.background = new T.Color(0x18201c);
++    this.scene.add(new T.HemisphereLight(0xe3edda, 0x3c4131, 2.5));
++    const key = new T.DirectionalLight(0xffecce, 3); key.position.set(3, 4, 5); this.scene.add(key);
++    const rim = new T.DirectionalLight(0x8bbdd0, 2); rim.position.set(-3, 2, -3); this.scene.add(rim);
++    const floor = new T.Mesh(new T.CircleGeometry(1.3, 40), new T.MeshStandardMaterial({ color: 0x353f35, roughness: 0.85 })); floor.rotation.x = -Math.PI / 2; floor.position.y = -0.006; this.scene.add(floor);
++    this.camera = new T.PerspectiveCamera(34, 1, 0.01, 12); this.camera.position.set(2.4, 1.4, 3.8); this.camera.lookAt(0, 0.86, 0);
++    this.pool = new PlayerCharacters(this.scene);
++    for (const config of CHARACTERS) {
++      const button = document.createElement("button"); button.className = "character-card"; button.dataset.character = config.id;
++      const img = document.createElement("img"); img.src = config.thumbnail; img.alt = ""; img.onerror = () => { img.hidden = true; };
++      const text = document.createElement("span"); text.textContent = config.name; button.append(img, text); button.onclick = () => this.preview(config.id); $("character-list").append(button);
++    }
++    $("choose-character").onclick = () => this.open(); $("character-cancel").onclick = () => this.close();
++    $("character-confirm").onclick = () => {
++      if (!this.actor || this.actor.character !== this.previewId) return;
++      this.selected = this.previewId; try { localStorage.setItem("echo-character", this.selected); } catch {}
++      this.refresh(); this.onChoose(this.selected); this.close();
++    };
++    this.refresh();
++  }
++  refresh() { this.$("selected-character").textContent = characterConfig(this.selected).name; }
++  open() {
++    this.opened = true; this.$("characters").hidden = false;
++    if (!this.renderer) {
++      this.renderer = new T.WebGLRenderer({ canvas: this.$("character-preview"), antialias: true, preserveDrawingBuffer: true });
++      this.renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); this.renderer.toneMapping = T.ACESFilmicToneMapping;
++    }
++    this.preview(this.selected); this.last = 0; this.draw(performance.now());
++  }
++  close() { this.opened = false; this.$("characters").hidden = true; cancelAnimationFrame(this.frame); this.$("choose-character").focus(); }
++  async preview(id) {
++    this.previewId = id; this.$("character-confirm").disabled = true; this.$("character-description").textContent = "Carregando modelo e texturas…";
++    for (const button of this.$("character-list").children) button.classList.toggle("selected", button.dataset.character === id);
++    if (this.actor) { this.pool.release(this.actor); this.actor = null; }
++    try {
++      await this.pool.prepare(id); if (!this.opened || this.previewId !== id) return;
++      this.actor = this.pool.acquire(id, "", this.color()); this.actor.nameTag.visible = false;
++      this.$("character-confirm").disabled = false;
++      this.$("character-description").textContent = id === "capsule" ? "Personagem original preservado. Cor ajustável no lobby." : "Modelo e texturas enviados · animações geradas sobre o rig original.";
++    } catch (error) { if (this.previewId === id) this.$("character-description").textContent = "Falha ao carregar: " + error.message; }
++  }
++  draw(now) {
++    if (!this.opened) return; this.frame = requestAnimationFrame((t) => this.draw(t));
++    if (now - this.last < 1000 / 30) return;
++    const dt = this.last ? Math.min(0.1, (now - this.last) / 1000) : 1 / 30; this.last = now;
++    const canvas = this.$("character-preview"), width = Math.max(1, canvas.clientWidth), height = Math.max(1, canvas.clientHeight);
++    if (this.width !== width || this.height !== height) { this.width = width; this.height = height; this.renderer.setSize(width, height, false); this.camera.aspect = width / height; this.camera.updateProjectionMatrix(); }
++    if (this.actor) { this.actor.update({ x: 0, y: 0, z: 0, yaw: -Math.PI + Math.sin(now / 5000) * 0.24, pitch: 0, hp: 100, connected: true, moving: false, color: this.color() }, dt, now / 1000); this.actor.nameTag.visible = false; }
++    this.renderer.render(this.scene, this.camera);
++  }
++}
+--- a/client/js/chunk-loader.js
++++ b/client/js/chunk-loader.js
+@@ -0,0 +1,33 @@
++// UPDATE 1.1.1: cache assíncrona. Nunca desloca o mundo nem a posição do jogador.
++export class ChunkLoader {
++  constructor(world) {
++    this.world = world; this.pending = new Map(); this.serial = 0;
++    this.completed = 0; this.worker = null;
++    try {
++      this.worker = new Worker(new URL("./chunk-worker.js", import.meta.url), { type: "module" });
++      this.worker.onmessage = ({ data: d }) => {
++        if (d.seed !== world.seed || d.level !== world.level) return;
++        const key = d.chunk.cx + "," + d.chunk.cz; this.pending.delete(key);
++        world.cache.set(key, d.chunk); this.completed++;
++        if (world.cache.size > 256) world.cache.delete(world.cache.keys().next().value);
++      };
++      this.worker.onerror = () => { this.worker?.terminate(); this.worker = null; this.pending.clear(); };
++    } catch { /* Sem Worker, a montagem gradual existente continua disponível. */ }
++  }
++  request(cx, cz) {
++    const key = cx + "," + cz;
++    if (!this.worker || this.world.cache.has(key) || this.pending.has(key)) return;
++    const id = ++this.serial; this.pending.set(key, id);
++    this.worker.postMessage({ id, seed: this.world.seed, level: this.world.level, cx, cz });
++  }
++  prefetch(cx, cz) {
++    for (let radius = 0; radius <= 2; radius++)
++      for (let z = cz - radius; z <= cz + radius; z++) for (let x = cx - radius; x <= cx + radius; x++)
++        if (Math.max(Math.abs(x - cx), Math.abs(z - cz)) === radius) this.request(x, z);
++  }
++  ready(cx, cz) {
++    if (!this.worker || this.world.cache.has(cx + "," + cz)) return true;
++    this.request(cx, cz); return false;
++  }
++  dispose() { this.worker?.terminate(); this.worker = null; this.pending.clear(); }
++}
+--- a/client/js/chunk-worker.js
++++ b/client/js/chunk-worker.js
+@@ -0,0 +1,9 @@
++import { World } from "/shared/world.js";
++// UPDATE 1.1.1: geração da grade fora da thread que desenha o jogo.
++let world;
++self.onmessage = ({ data: d }) => {
++  if (!world || world.seed !== d.seed || world.level !== d.level) world = new World(d.seed, d.level);
++  const c = world.chunk(d.cx, d.cz), grid = c.grid.slice();
++  self.postMessage({ id: d.id, seed: d.seed, level: d.level,
++    chunk: { cx: c.cx, cz: c.cz, variant: c.variant, grid } }, [grid.buffer]);
++};
+--- a/client/js/local-motion.js
++++ b/client/js/local-motion.js
+@@ -0,0 +1,80 @@
++import { stepPlayer, HEIGHT, EYE } from "../../shared/world.js";
++
++// UPDATE 1.1.1: a física usa o MESMO passo de 30 Hz do servidor. Cada comando
++// é identificado; snapshots confirmam comandos, e apenas os pendentes são
++// reaplicados. A câmera interpola poses, sem snaps por distância/chunk.
++const STEP = 1 / 30;
++const PHYSICS = ["x", "y", "z", "vy", "yaw", "pitch", "stamina", "exhausted", "jumpHeld", "moving", "sprinting", "seq"];
++export class LocalMotion {
++  constructor(world) {
++    this.world = world; this.history = []; this.offset = { x: 0, y: 0, z: 0 };
++    this.previous = {}; this.state = null; this.accumulator = 0;
++    this.stats = { corrections: 0, maximumError: 0, droppedTime: 0 };
++  }
++  reset(state, now) {
++    this.state = { ...state }; Object.assign(this.previous, state);
++    this.history.length = 0; this.offset.x = this.offset.y = this.offset.z = 0;
++    this.accumulator = 0; this.last = this.visualAt = now;
++    this.sequence = this.sent = state.seq || 0; return this.state;
++  }
++  advance(now, input, enabled = true) {
++    if (!this.state) return;
++    // rAF fornece o timestamp de início do quadro, que pode ser ANTERIOR
++    // a um timer/snapshot já processado. Nunca volte o relógio para trás.
++    if (now <= this.last) return;
++    const elapsed = Math.max(0, (now - this.last) / 1000); this.last = now;
++    if (!enabled) { this.accumulator = 0; Object.assign(this.previous, this.state); return; }
++    // Um atraso gráfico normal não perde tempo de movimento. Um retorno após
++    // suspensão longa é limitado e será reconciliado pelo estado da sessão.
++    this.accumulator += Math.min(elapsed, 1);
++    this.stats.droppedTime += Math.max(0, elapsed - 1);
++    while (this.accumulator >= STEP) {
++      Object.assign(this.previous, this.state);
++      const command = { ...input, seq: ++this.sequence };
++      stepPlayer(this.state, command, this.world, STEP);
++      this.state.seq = command.seq;
++      this.history.push(command);
++      if (this.history.length > 256) this.history.shift();
++      this.accumulator -= STEP;
++    }
++  }
++  packet(revision) {
++    // Lotes pequenos recuperam frames lentos; cada passo consome 1/30 s do
++    // orçamento acumulado na autoridade, sem acelerar por pedido do cliente.
++    const commands = this.history.filter((c) => c.seq > this.sent).slice(0, 32);
++    if (commands.length) this.sent = commands[commands.length - 1].seq;
++    return { commands, revision };
++  }
++  reconcile(authoritative, now) {
++    const s = this.state; if (!s) return this.reset(authoritative, now);
++    const oldX = s.x, oldY = s.y, oldZ = s.z;
++    this.history = this.history.filter((c) => c.seq > authoritative.seq);
++    s.hp = authoritative.hp;
++    for (const key of PHYSICS) s[key] = authoritative[key];
++    for (const command of this.history) { stepPlayer(s, command, this.world, STEP); s.seq = command.seq; }
++    const dx = s.x - oldX, dy = s.y - oldY, dz = s.z - oldZ;
++    const error = Math.hypot(dx, dy, dz);
++    if (error > 0.00001) {
++      this.stats.corrections++; this.stats.maximumError = Math.max(error, this.stats.maximumError);
++      // Conserve a pose visível durante a correção; retire o erro gradualmente.
++      this.previous.x += dx; this.previous.y += dy; this.previous.z += dz;
++      this.offset.x -= dx; this.offset.y -= dy; this.offset.z -= dz;
++    }
++    return s;
++  }
++  render(now, out = {}) {
++    const s = this.state; if (!s) return out;
++    const elapsed = Math.max(0, (now - this.visualAt) / 1000); this.visualAt = Math.max(this.visualAt, now);
++    const decay = Math.exp(-12 * elapsed), alpha = Math.min(1, this.accumulator / STEP);
++    this.offset.x *= decay; this.offset.y *= decay; this.offset.z *= decay;
++    Object.assign(out, s);
++    out.x = this.previous.x + (s.x - this.previous.x) * alpha;
++    out.y = this.previous.y + (s.y - this.previous.y) * alpha;
++    out.z = this.previous.z + (s.z - this.previous.z) * alpha;
++    // Colisão contínua compartilhada também limita correções visuais: a câmera
++    // não atravessa uma parede enquanto acompanha a posição autoritativa.
++    this.world.move(out, this.offset.x, this.offset.z);
++    out.y = Math.max(0, Math.min(HEIGHT - EYE - 0.01, out.y + this.offset.y));
++    return out;
++  }
++}
+--- a/client/js/main.js
++++ b/client/js/main.js
+@@ -13,17 +13,21 @@
+   RELAYS,
+   MONSTERS,
+   rayBox,
+-  stepPlayer,
+   supply,
+ } from "/shared/world.js";
+ import { WorldView } from "./world-view.js";
+-import { Actor, ActorPool, Weapon } from "./actors.js";
++import { ActorPool, Weapon } from "./actors.js";
+ import { ShotEffects } from "./shot-effects.js";
+ import { LEVELS, levelConfig, exitReady } from "/shared/levels.js";
+ import { DEFAULT_PLAYER_COLOR } from "/shared/config.js";
+ import { cameraPosition } from "/shared/weapon.js";
+ import { AudioEngine } from "./audio.js";
+ import { Network } from "./network.js";
++import { LocalMotion } from "./local-motion.js";
++import { PlayerCharacters } from "./player-characters.js";
++import { CharacterMenu } from "./character-menu.js";
++import { prepareMedkit } from "./model-assets.js";
++import { characterConfig } from "/shared/characters.js";
+ const $ = (id) => document.getElementById(id),
+   canvas = $("game");
+ let quality = "high";
+@@ -99,10 +103,14 @@
+ composer.addPass(grain);
+ const audio = new AudioEngine(),
+   weapon = new Weapon(), actorPool = new ActorPool(scene),
+-  self = new Actor(scene, 0, true), shotEffects = new ShotEffects(scene);
++  characterActors = new PlayerCharacters(scene), shotEffects = new ShotEffects(scene);
++let self = characterActors.acquire("capsule");
+ self.root.visible = false;
+ $("player-color").value = DEFAULT_PLAYER_COLOR;
+-let thirdPerson = false, transitioning = false, shotSequence = 0;
++const characterMenu = new CharacterMenu(() => {}, () => $("player-color").value);
++const pendingPlayers = new Map();
++const pendingShots = new Map();
++let thirdPerson = false, transitioning = false, shotSequence = 0, lastShot = null;
+ const muzzle = new T.Vector3(), aimDirection = new T.Vector3(), shotPose = {},
+   fpsSamples = new Float32Array(180);
+ let fpsFrames = 0, fpsElapsed = 0, sampleCursor = 0, shadowClock = 0;
+@@ -119,9 +127,6 @@
+   reduced = false;
+ let time = 0,
+   last = performance.now(),
+-  acc = 0,
+-  sendClock = 0,
+-  seq = 0,
+   shotAt = -10,
+   footClock = 0,
+   noticeUntil = 0,
+@@ -134,6 +139,8 @@
+   aimPitch = 0,
+   lookAfter = 0,
+   skipLookEvents = 0,
++  pointerAnchorX = null,
++  pointerAnchorY = null,
+   invite = "";
+ const keys = new Set(),
+   monsters = new Map(),
+@@ -141,6 +148,7 @@
+   lastAudio = new Map(),
+   forward = new T.Vector3(),
+   lightOffset = new T.Vector3(0.12, -0.13, 0);
++const motion = new LocalMotion(world), renderPose = {};
+ const network = new Network(receive, event, (status) => {
+   networkStatus = status;
+   if (status !== "CONECTADO") keys.clear();
+@@ -151,7 +159,9 @@
+ }
+ function clearActors() {
+   for (const a of monsters.values()) actorPool.release(a);
+-  for (const a of players.values()) actorPool.release(a);
++  for (const a of players.values()) characterActors.release(a);
++  pendingPlayers.clear();
++  pendingShots.clear();
+   monsters.clear();
+   players.clear();
+   lastAudio.clear();
+@@ -160,6 +170,7 @@
+ function rebuild(seed, level = 0) {
+   view.dispose();
+   world = new World(seed, level);
++  motion.world = world;
+   view = new WorldView(scene, world, quality);
+   clearActors();
+   const cfg = levelConfig(level);
+@@ -175,32 +186,28 @@
+   if (changed) {
+     rebuild(s.mapSeed, s.level); local = null; transitioning = false; ended = false;
+     $("transition").hidden = $("end").hidden = true;
+-    acc = sendClock = 0; keys.clear();
++    keys.clear();
+   }
+   const p = s.players.find((p) => p.id === session.id);
+   if (!p) return;
+-  if (!local) local = { ...p };
++  const now = performance.now();
++  if (!local) local = motion.reset(p, now);
+   else {
+     if (p.hp < local.hp) {
+       damage = 0.65;
+       audio.hurt();
+     }
+-    const error = Math.hypot(p.x - local.x, p.z - local.z);
+-    if (error > 0.5) {
+-      local.x = T.MathUtils.lerp(local.x, p.x, error > 2 ? 1 : 0.45);
+-      local.z = T.MathUtils.lerp(local.z, p.z, error > 2 ? 1 : 0.45);
+-    }
++    advanceMotion(now);
++    motion.reconcile(p, now);
+     for (const k of [
+       "hp",
+-      "ammo",
+       "reserve",
+       "reload",
+       "connected",
+-      "exhausted",
+     ])
+       local[k] = p[k];
+-    if (Math.abs(local.stamina - p.stamina) > 0.12) local.stamina = p.stamina;
+-    if (Math.abs(local.y - p.y) > 0.3) { local.y = p.y; local.vy = p.vy; }
++    for (const [id, expires] of pendingShots) if (performance.now() > expires) pendingShots.delete(id);
++    local.ammo = Math.max(0, p.ammo - pendingShots.size);
+   }
+   if (changed) { aimYaw = p.yaw; aimPitch = p.pitch; showPause(); }
+   if (s.transition && !transitioning) {
+@@ -211,6 +218,7 @@
+     $("transition-help").textContent = session.id === session.host ? "Continue quando estiver pronto. A passagem pausa as criaturas." : "Aguardando o host continuar a expedição.";
+   }
+   weapon.setColor(p.color); self.setColor(p.color);
++  ensureSelf(p);
+   const present = new Set();
+   for (const m of s.monsters) {
+     present.add(m.id);
+@@ -226,15 +234,38 @@
+   for (const p of s.players)
+     if (p.id !== session.id) {
+       pp.add(p.id);
+-      if (!players.has(p.id))
+-        players.set(p.id, actorPool.acquire(0, true, p.name, p.color));
++      ensureRemote(p);
+     }
+   for (const [id, a] of players)
+     if (!pp.has(id)) {
+-      actorPool.release(a);
++      characterActors.release(a);
+       players.delete(id);
+       lastAudio.delete(id);
+     }
++}
++// UPDATE: os modelos carregam fora do frame. O companheiro conserva a escolha
++// em reconexões e mudanças de nível, sem trocar por um personagem substituto.
++function ensureSelf(p) {
++  const id = characterConfig(p.character).id;
++  if (self.character === id) return;
++  const currentSession = session;
++  characterActors.prepare(id).then(() => {
++    if (!active || session !== currentSession || characterConfig(snapshot?.players.find((q) => q.id === session.id)?.character).id !== id || self.character === id) return;
++    characterActors.release(self); self = characterActors.acquire(id, p.name, p.color); self.root.visible = false;
++  }).catch((error) => notice("Não foi possível carregar seu personagem: " + error.message, 8));
++}
++function ensureRemote(p) {
++  const id = characterConfig(p.character).id, existing = players.get(p.id);
++  if (existing?.character === id || pendingPlayers.has(p.id)) return;
++  if (existing) { characterActors.release(existing); players.delete(p.id); }
++  const token = {}; pendingPlayers.set(p.id, token);
++  characterActors.prepare(id).then(() => {
++    if (pendingPlayers.get(p.id) !== token) return;
++    pendingPlayers.delete(p.id);
++    if (active && snapshot?.players.some((q) => q.id === p.id)) players.set(p.id, characterActors.acquire(id, p.name, p.color));
++  }).catch((error) => {
++    if (pendingPlayers.get(p.id) === token) { pendingPlayers.delete(p.id); notice("Modelo do companheiro: " + error.message, 8); }
++  });
+ }
+ function event(type, d) {
+   if (type === "stage-complete" || type === "stage-start") { receive(d); ui(); return; }
+@@ -257,7 +288,6 @@
+     receive(d);
+     aimYaw = local?.yaw || 0;
+     aimPitch = local?.pitch || 0;
+-    acc = sendClock = 0;
+     shotAt = -10;
+     notice("Nova expedição iniciada.");
+     showPause();
+@@ -276,6 +306,7 @@
+   if (type !== "effect" || !active) return;
+   const own = d.id === session.id;
+   if (d.type === "shot") {
++    if (own) pendingShots.delete(d.shotId);
+     if (!own) audio.shot(d.origin);
+     if (own && d.hit) {
+       hitUntil = time + 0.16;
+@@ -305,8 +336,16 @@
+     jump: locked && (keys.has("Space") || time < jumpUntil),
+     yaw: aimYaw,
+     pitch: aimPitch,
+-    seq: ++seq,
+   };
++}
++// UPDATE: previsão e envio compartilham comandos; nunca arredondam coordenadas.
++function advanceMotion(now = performance.now()) {
++  motion.advance(now, readInput(), active && local && network.ready() && snapshot?.hostConnected && !transitioning && !snapshot?.won);
++}
++function sendMotion() {
++  if (!active || !local || transitioning || !network.ready()) return;
++  advanceMotion();
++  network.send("input", motion.packet(snapshot.revision));
+ }
+ async function lock() {
+   if (!active || ended || transitioning) return;
+@@ -325,7 +364,7 @@
+   keys.clear();
+   jumpUntil = 0;
+   if (document.pointerLockElement === canvas) document.exitPointerLock();
+-  network.send("input", readInput());
++  sendMotion();
+   $("pause").hidden = false;
+   $("restart-pause").hidden = session.id !== session.host;
+ }
+@@ -334,6 +373,7 @@
+   keys.clear();
+   lookAfter = performance.now() + 120;
+   skipLookEvents = 2;
++  pointerAnchorX = pointerAnchorY = null;
+   if (locked) $("pause").hidden = true;
+   else showPause();
+ });
+@@ -351,6 +391,12 @@
+     document.pointerLockElement === canvas &&
+     performance.now() > lookAfter
+   ) {
++    // UPDATE: em Pointer Lock, clientX/Y ficam fixos. Uma mudança absoluta
++    // indica reposicionamento do cursor ao focar/clicar outra janela/menu.
++    // Descarte esse delta artificial, sem amortecer o movimento real do mouse.
++    if (e.isTrusted && (pointerAnchorX !== e.clientX || pointerAnchorY !== e.clientY)) {
++      pointerAnchorX = e.clientX; pointerAnchorY = e.clientY; return;
++    }
+     const s = Number($("sensitivity").value) * 0.00045;
+     aimYaw -= e.movementX * s;
+     aimPitch = Math.max(-1.45, Math.min(1.45, aimPitch - e.movementY * s));
+@@ -375,13 +421,13 @@
+     local.reload <= 0
+   ) {
+     local.reload = 1.65;
+-    network.send("reload");
++    sendMotion(); network.send("reload", { seq: motion.sequence });
+     audio.reload();
+   }
+-  if (e.code === "KeyE") network.send("interact");
++  if (e.code === "KeyE") { sendMotion(); network.send("interact", { seq: motion.sequence }); }
+   if (e.code === "KeyF") lightOn = !lightOn;
+   if (e.code === "KeyV") thirdPerson = !thirdPerson;
+-  if (e.code === "Space") network.send("input", readInput());
++  if (e.code === "Space") sendMotion();
+ });
+ document.addEventListener("keyup", (e) => keys.delete(e.code));
+ document.addEventListener("mousedown", (e) => {
+@@ -405,11 +451,13 @@
+   ) {
+     shotAt = shotTime;
+     local.ammo--;
++    sendMotion();
+     // NOVO: o marcador da arma é convertido de sua câmera sobreposta ao mundo.
+-    Object.assign(shotPose, local, { yaw: aimYaw, pitch: aimPitch });
++    motion.render(performance.now(), shotPose);
++    Object.assign(shotPose, { yaw: aimYaw, pitch: aimPitch });
+     const cp = cameraPosition(shotPose, thirdPerson, world);
+     camera.position.set(cp.x, cp.y, cp.z); camera.rotation.set(aimPitch, aimYaw, 0, "YXZ"); camera.updateMatrixWorld();
+-    if (thirdPerson) { self.update(shotPose, 1 / 60, time); self.root.position.set(local.x, local.y, local.z); self.root.rotation.y = aimYaw + Math.PI; self.getMuzzle(muzzle); }
++    if (thirdPerson) { self.update(shotPose, 1 / 60, time); self.root.position.set(shotPose.x, shotPose.y, shotPose.z); self.root.rotation.y = aimYaw + Math.PI; self.getMuzzle(muzzle); }
+     else weapon.getMuzzleWorld(camera, muzzle);
+     camera.getWorldDirection(aimDirection);
+     const point = world.ray(camera.position, aimDirection);
+@@ -421,8 +469,10 @@
+     const origin = { x: muzzle.x, y: muzzle.y, z: muzzle.z }, target = {
+       x: camera.position.x + aimDirection.x * distance, y: camera.position.y + aimDirection.y * distance, z: camera.position.z + aimDirection.z * distance };
+     const shotId = ++shotSequence;
++    pendingShots.set(shotId, performance.now() + 3500);
+     shotEffects.fire(session.id + ":" + shotId, origin, target, reduced);
+-    network.send("shoot", { yaw: aimYaw, pitch: aimPitch, origin, thirdPerson, shotId });
++    lastShot = { yaw: aimYaw, pitch: aimPitch, origin, thirdPerson, shotId, seq: motion.sequence };
++    network.send("shoot", lastShot);
+     weapon.shoot(reduced);
+     audio.shot();
+     if (!reduced) {
+@@ -456,11 +506,15 @@
+   $("connect").disabled = true;
+   try {
+     await audio.start();
++    $("error").textContent = "Carregando personagem e kit médico…";
++    await Promise.all([characterActors.prepare(characterMenu.selected), prepareMedkit()]);
++    view.installMedkits(); $("error").textContent = "";
+     const result = await network.connect({
+       mode,
+       name: $("name").value,
+       seed: $("seed").value,
+       color: $("player-color").value,
++      character: characterMenu.selected,
+       code: $("room").value.trim().toUpperCase(),
+       url:
+         mode === "join"
+@@ -640,9 +694,9 @@
+ }
+ const actorFrustum = new T.Frustum(), actorProjection = new T.Matrix4(), cameraCoordinates = {};
+ // ALTERADO: intenções são enviadas em tempo real, independente da taxa de render.
+-setInterval(() => { if (active && local && !transitioning) network.send("input", readInput()); }, 50);
++setInterval(sendMotion, 50);
+ // Diagnóstico somente leitura para reproduzir a avaliação de desempenho.
+-let lastDrawCalls = 0, lastFps = 0;
++let lastDrawCalls = 0, lastFps = 0, cameraTime = 0;
+ window.echoDiagnostics = () => {
+   const samples = Array.from(fpsSamples).filter((x) => x > 0).sort((a, b) => a - b);
+   return { fps: lastFps, p95FrameMs: samples[Math.floor(samples.length * 0.95)] || 0,
+@@ -650,27 +704,33 @@
+     chunks: view.chunks.size, chunkCapacity: 16, build: { ...view.stats }, pointLights: view.lights.length,
+     shadowLights: quality === "high" ? 1 : 0, actorPool: actorPool.all.length,
+     projectileCapacity: shotEffects.shots.length, projectiles: shotEffects.activeCount, thirdPerson, level: world.level,
+-    transitioning, snapshotTransition: !!snapshot?.transition, connected: network.ready() };
++    transitioning, snapshotTransition: !!snapshot?.transition, connected: network.ready(),
++    motion: { ...motion.stats, pending: motion.history.length },
++    pose: local ? { x: local.x, y: local.y, z: local.z } : null,
++    camera: { x: camera.position.x, y: camera.position.y, z: camera.position.z },
++    cameraTime,
++    workerChunks: view.chunkLoader.completed || 0, character: self.character, lastShot,
++    remoteCharacters: [...players.values()].map((a) => a.character) };
+ };
+ function frame(now) {
+   requestAnimationFrame(frame);
+   // NOVO: poupe a GPU em abas minimizadas; o servidor e os sockets continuam.
+-  if (document.hidden) { last = now; return; }
++  if (document.hidden || characterMenu.opened) { last = now; return; }
+   const elapsed = Math.max(0, (now - last) / 1000), dt = Math.min(elapsed, 0.1);
+   last = now; time += elapsed;
+   fpsSamples[sampleCursor++ % fpsSamples.length] = elapsed * 1000;
+   fpsFrames++; fpsElapsed += elapsed;
+   if (fpsElapsed >= 0.5) { lastFps = fpsFrames / fpsElapsed; $("fps").textContent = Math.round(lastFps) + " FPS"; fpsFrames = fpsElapsed = 0; }
+   if (active && local) {
+-    // Física fixa com recuperação limitada: frames lentos não reduzem a velocidade.
+-    acc += Math.min(elapsed, 0.25);
+-    while (acc >= 1 / 60) {
+-      if (network.socket?.connected && snapshot.hostConnected && !transitioning && !snapshot.won) stepPlayer(local, readInput(), world, 1 / 60);
+-      acc -= 1 / 60;
+-    }
++    // UPDATE: simule no instante em que o callback REALMENTE executa. O
++    // timestamp de rAF pode ter envelhecido enquanto a GPU/thread aguardava.
++    cameraTime = performance.now();
++    advanceMotion(cameraTime);
++    motion.render(cameraTime, renderPose);
+     const bob = !thirdPerson && local.moving && locked && !reduced && local.y === 0 ? Math.sin(time * (local.sprinting ? 14 : 9)) * 0.025 : 0;
+     local.yaw = aimYaw; local.pitch = aimPitch;
+-    const cp = cameraPosition(local, thirdPerson, world, cameraCoordinates);
++    renderPose.yaw = aimYaw; renderPose.pitch = aimPitch;
++    const cp = cameraPosition(renderPose, thirdPerson, world, cameraCoordinates);
+     camera.position.set(cp.x, cp.y + bob, cp.z); camera.rotation.set(aimPitch, aimYaw, 0, "YXZ");
+     const fov = T.MathUtils.damp(camera.fov, local.sprinting && locked ? 82 : 76, 6, dt);
+     if (Math.abs(fov - camera.fov) > 0.01) { camera.fov = fov; camera.updateProjectionMatrix(); }
+@@ -678,7 +738,7 @@
+     if (local.reload > 0) local.reload = Math.max(0, local.reload - elapsed);
+     if (locked && local.moving && local.y === 0 && time > footClock) { footClock = time + (local.sprinting ? 0.3 : 0.46); audio.step(); }
+     updateActors(dt);
+-    if (thirdPerson && local.hp > 0 && !transitioning) { self.update(local, dt, time); self.root.position.set(local.x, local.y, local.z); self.root.rotation.y = aimYaw + Math.PI; self.nameTag.visible = false; }
++    if (thirdPerson && local.hp > 0 && !transitioning) { self.update(renderPose, dt, time); self.root.position.set(renderPose.x, renderPose.y, renderPose.z); self.root.rotation.y = aimYaw + Math.PI; self.nameTag.visible = false; }
+     else self.root.visible = false;
+     weapon.update(dt, time, local, locked);
+     uiClock += elapsed; if (uiClock > 0.1) { ui(); uiClock = 0; }
+@@ -710,14 +770,15 @@
+ try {
+   const saved = JSON.parse(sessionStorage.getItem("echo-session") || "null");
+   if (saved)
+-    network
++    Promise.all([prepareMedkit(), characterActors.prepare(characterMenu.selected)])
++      .then(() => network
+       .connect({
+         url: saved.url,
+         name: saved.name,
+         mode: "join",
+         code: saved.code,
+         token: saved.token,
+-      })
++      }))
+       .then(begin)
+       .catch((e) => {
+         sessionStorage.removeItem("echo-session");
+--- a/client/js/model-assets.js
++++ b/client/js/model-assets.js
+@@ -0,0 +1,143 @@
++import * as T from "three";
++import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
++import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
++import { clone } from "three/addons/utils/SkeletonUtils.js";
++import { characterConfig, MEDKIT } from "../../shared/characters.js";
++
++// UPDATE: modelos/texturas originais em cache. Parsing, normalização e ajustes
++// de rig acontecem uma vez no carregamento, nunca dentro do loop de movimento.
++const cache = new Map();
++let medkitTemplate = null;
++export function shareSkeletons(root) {
++  const shared = new Map();
++  root.traverse((mesh) => {
++    if (!mesh.isSkinnedMesh) return;
++    const skeleton = mesh.skeleton, key = skeleton.bones.map((b) => b.uuid).join("|");
++    const previous = shared.get(key);
++    if (previous && skeleton.boneInverses.every((m, i) => m.elements.every((v, j) => Math.abs(v - previous.boneInverses[i].elements[j]) < 1e-6))) {
++      mesh.skeleton = previous; skeleton.dispose();
++    } else shared.set(key, skeleton);
++  });
++}
++export function compactSkeletons(root) {
++  root.updateMatrixWorld(true);
++  const canonical = new Map(), duplicates = [], bones = [], meshes = [];
++  let safe = true;
++  root.traverse((o) => {
++    if (o.isSkinnedMesh) meshes.push(o);
++    if (!o.isBone) return;
++    const first = canonical.get(o.name);
++    if (!first) { canonical.set(o.name, o); bones.push(o); }
++    else {
++      if (o.matrixWorld.elements.some((v, i) => Math.abs(v - first.matrixWorld.elements[i]) > 1e-4)) safe = false;
++      duplicates.push(o);
++    }
++  });
++  // Só consolidamos cópias com bind pose IDÊNTICA; rigs com nomes repetidos
++  // em poses diferentes continuam intactos. Geometria/UV/skin indices não mudam.
++  if (safe && duplicates.length) {
++    const parents = bones.map((b) => {
++      let p = b.parent;
++      while (p?.isBone && p.name === b.name) p = p.parent;
++      return p?.isBone ? canonical.get(p.name) : p;
++    });
++    for (let i = 0; i < bones.length; i++) if (parents[i] && bones[i].parent !== parents[i]) parents[i].attach(bones[i]);
++    for (const mesh of meshes) mesh.skeleton.bones = mesh.skeleton.bones.map((b) => canonical.get(b.name));
++    for (const duplicate of duplicates) duplicate.removeFromParent();
++    root.updateMatrixWorld(true);
++  }
++  shareSkeletons(root);
++  return { bones: bones.length, removed: safe ? duplicates.length : 0 };
++}
++function markShared(root) {
++  root.traverse((o) => {
++    if (!o.isMesh) return;
++    o.castShadow = o.receiveShadow = true;
++    o.userData.sharedAsset = true;
++    // Bounding volumes de bind pose ficam inválidos ao animar. O culling já
++    // acontece no ator/chunk inteiro, sem calcular bounds skinned todo frame.
++    if (o.isSkinnedMesh) o.frustumCulled = false;
++    for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
++      if (m.map) m.map.colorSpace = T.SRGBColorSpace;
++      m.needsUpdate = true;
++    }
++  });
++}
++function normalize(root, config, character) {
++  root.updateMatrixWorld(true);
++  const box = new T.Box3().setFromObject(root, true), size = box.getSize(new T.Vector3());
++  if (size.y < 0.000001 || !Number.isFinite(size.y)) throw Error("Modelo sem dimensões válidas: " + config.model);
++  const scale = character ? config.height / size.y : config.size / Math.max(size.x, size.y, size.z);
++  const center = box.getCenter(new T.Vector3());
++  if (character) {
++    const feet = []; root.traverse((o) => { if (o.isBone && /^(Left_ankle|Right_ankle|Ankle_[LR]|Foot_[LR])$/.test(o.name) && o.parent?.name !== o.name) feet.push(o.getWorldPosition(new T.Vector3())); });
++    if (feet.length) { center.x = feet.reduce((a, b) => a + b.x, 0) / feet.length; center.z = feet.reduce((a, b) => a + b.z, 0) / feet.length; }
++  }
++  const wrapper = new T.Group(), pivot = new T.Group(); wrapper.add(pivot); pivot.add(root);
++  pivot.rotation.y = config.rotationY || 0;
++  root.position.x -= center.x; root.position.z -= center.z; root.position.y -= box.min.y;
++  pivot.scale.setScalar(scale); pivot.position.y = character ? 0.02 : 0.004;
++  wrapper.animations = root.animations || []; wrapper.userData.dimensions = size.multiplyScalar(scale).toArray();
++  markShared(wrapper); wrapper.updateMatrixWorld(true); return wrapper;
++}
++async function loadCharacter(config) {
++  const directory = config.model.slice(0, config.model.lastIndexOf("/") + 1), manager = new T.LoadingManager();
++  let complete; const imagesReady = new Promise((resolve) => { complete = resolve; });
++  const failed = []; manager.onLoad = complete; manager.onError = (url) => failed.push(url);
++  manager.setURLModifier((url) => {
++    if (/^(blob:|data:)/.test(url) || !/\.(png|jpe?g|webp|tga)$/i.test(url)) return url;
++    const filename = url.replace(/\\/g, "/").split("/").pop();
++    return directory + "textures/" + (config.aliases?.[filename] || filename);
++  });
++  const root = await new FBXLoader(manager).loadAsync(config.model);
++  await imagesReady;
++  if (failed.length) throw Error("Textura ausente em " + config.name + ": " + failed.map((s) => s.split("/").pop()).join(", "));
++  const textures = new Map(), loader = new T.TextureLoader();
++  const texture = (filename) => {
++    if (!textures.has(filename)) textures.set(filename, loader.loadAsync(directory + "textures/" + filename).then((t) => { t.colorSpace = T.SRGBColorSpace; return t; }));
++    return textures.get(filename);
++  };
++  const jobs = [], visited = new Set();
++  root.traverse((o) => {
++    if (!o.isMesh) return;
++    for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
++      if (visited.has(m)) continue; visited.add(m);
++      if (config.id === "vergil" && m.opacity === 0) {
++        m.opacity = 1; m.transparent = false; m.alphaTest = 0.15;
++        // O FBX referencia o albedo como alphaMap: seu canal verde apagava a
++        // roupa escura. O recorte correto usa apenas o alfa do PNG original.
++        if (m.alphaMap === m.map) m.alphaMap = null;
++        m.specular.setHex(0x222222); m.shininess = 35;
++      }
++      if (config.materials) {
++        const role = /bdy/.test(m.name) ? "body" : /face|mayu/.test(m.name) ? "face" : /hair/.test(m.name) ? "hair" : /tail/.test(m.name) ? "tail" : /eye/.test(m.name) ? "eye" : null;
++        if (role) jobs.push(texture(config.materials[role]).then((t) => { m.map = t; m.color.setHex(0xffffff); m.needsUpdate = true; }));
++      }
++      // Rosto/cabelo com textura recortada; mantenha cores e UVs originais.
++      if (/hair|mayu/.test(m.name)) { m.alphaTest = 0.1; m.side = T.DoubleSide; }
++      if (config.id === "metal-sonic") {
++        if (/Body|CarPaint/.test(m.name)) jobs.push(loader.loadAsync(directory + "textures/enm_metalsonic_body_nrm.png").then((t) => { m.normalMap = t; m.normalScale.set(0.6, 0.6); m.needsUpdate = true; }));
++        if (/Eye|Light/.test(m.name) && m.emissiveMap) { m.emissive.setHex(0xffffff); m.emissiveIntensity = 0.8; }
++      }
++    }
++  });
++  await Promise.all(jobs);
++  root.userData.rig = compactSkeletons(root);
++  const template = normalize(root, config, true); template.userData.rig = root.userData.rig;
++  return template;
++}
++export async function prepareCharacter(id) {
++  const config = characterConfig(id); if (!config.model) return null;
++  if (!cache.has(config.id)) cache.set(config.id, loadCharacter(config).catch((error) => { cache.delete(config.id); throw error; }));
++  return cache.get(config.id);
++}
++export function instantiateCharacter(template) {
++  const instance = clone(template); shareSkeletons(instance); return instance;
++}
++export async function prepareMedkit() {
++  if (!cache.has("medkit")) cache.set("medkit", new GLTFLoader().loadAsync(MEDKIT.model).then((gltf) => {
++    gltf.scene.animations = gltf.animations; medkitTemplate = normalize(gltf.scene, MEDKIT, false); return medkitTemplate;
++  }).catch((error) => { cache.delete("medkit"); throw error; }));
++  return cache.get("medkit");
++}
++export function instantiateMedkit() { return medkitTemplate ? medkitTemplate.clone(true) : null; }
+--- a/client/js/player-characters.js
++++ b/client/js/player-characters.js
+@@ -0,0 +1,72 @@
++import * as T from "three";
++import { Actor } from "./actors.js";
++import { prepareCharacter, instantiateCharacter } from "./model-assets.js";
++import { RigAnimation } from "./rig-animation.js";
++import { characterConfig } from "../../shared/characters.js";
++const gunGeometry = new T.BoxGeometry(0.075, 0.065, 0.31), barrelGeometry = new T.CylinderGeometry(0.019, 0.019, 0.08, 8);
++const gunMaterial = new T.MeshStandardMaterial({ color: 0x303a32, metalness: 0.3, roughness: 0.5 });
++const shadowGeometry = new T.CircleGeometry(0.43, 18);
++class ImportedPlayer {
++  constructor(scene, id, template) {
++    Object.assign(this, { scene, character: id, player: true, root: new T.Group(), temp: new T.Vector3(), initial: false, death: 0 });
++    this.model = instantiateCharacter(template); this.root.add(this.model); scene.add(this.root);
++    this.animation = new RigAnimation(this.model);
++    this.shadow = new T.Mesh(shadowGeometry, new T.MeshBasicMaterial({ color: 0x020402, transparent: true, opacity: 0.3, depthWrite: false }));
++    this.shadow.rotation.x = -Math.PI / 2; this.shadow.position.y = 0.014; this.root.add(this.shadow);
++    this.nameCanvas = document.createElement("canvas"); this.nameCanvas.width = 512; this.nameCanvas.height = 64;
++    this.nameTexture = new T.CanvasTexture(this.nameCanvas); this.nameTexture.colorSpace = T.SRGBColorSpace;
++    this.nameTag = new T.Sprite(new T.SpriteMaterial({ map: this.nameTexture, transparent: true, depthWrite: false }));
++    this.nameTag.position.y = 1.93; this.nameTag.scale.set(2.4, 0.3, 1); this.root.add(this.nameTag);
++    this.gun = new T.Group(); this.root.add(this.gun);
++    const slide = new T.Mesh(gunGeometry, gunMaterial), barrel = new T.Mesh(barrelGeometry, gunMaterial);
++    slide.position.z = 0.12; barrel.rotation.x = Math.PI / 2; barrel.position.z = 0.29; slide.castShadow = true; this.gun.add(slide, barrel);
++    this.muzzle = new T.Object3D(); this.muzzle.position.z = 0.33; this.gun.add(this.muzzle);
++    this.animation.update({ moving: false }, 0, 0, true);
++  }
++  setColor() { /* Texturas e cores dos FBX enviados permanecem originais. */ }
++  setName(name) {
++    if (this.name === name) return; this.name = name;
++    const c = this.nameCanvas, x = c.getContext("2d"); x.clearRect(0, 0, c.width, c.height); x.font = "26px monospace"; x.textAlign = "center"; x.fillStyle = "#d6dfbc"; x.fillText(String(name).slice(0, 24), 256, 42); this.nameTexture.needsUpdate = true;
++  }
++  reset(name = "") { this.initial = false; this.death = 0; this.model.rotation.set(0, 0, 0); this.root.visible = true; this.nameTag.visible = true; this.setName(name); }
++  update(s, dt, t) {
++    if (!this.initial) { this.root.position.set(s.x, s.y || 0, s.z); this.root.rotation.y = (s.yaw || 0) + Math.PI; this.initial = true; }
++    this.root.position.x = T.MathUtils.damp(this.root.position.x, s.x, 14, dt); this.root.position.z = T.MathUtils.damp(this.root.position.z, s.z, 14, dt); this.root.position.y = s.y || 0;
++    const desired = (s.yaw || 0) + Math.PI;
++    this.root.rotation.y += Math.atan2(Math.sin(desired - this.root.rotation.y), Math.cos(desired - this.root.rotation.y)) * Math.min(1, dt * 14);
++    this.root.visible = s.connected !== false;
++    this.death = s.hp <= 0 ? Math.min(1, this.death + dt * 1.6) : 0;
++    this.model.rotation.z = this.death * 1.48;
++    if (!this.death) this.animation.update(s, dt, t);
++    this.root.updateMatrixWorld(true);
++    const hand = this.animation.roles.rightHand?.bone;
++    if (hand) { hand.getWorldPosition(this.temp); this.root.worldToLocal(this.temp); this.gun.position.copy(this.temp); }
++    else this.gun.position.set(-0.37, 0.96, 0.12);
++    this.gun.rotation.x = -(s.pitch || 0);
++  }
++  getMuzzle(out) { this.root.updateMatrixWorld(true); return this.muzzle.getWorldPosition(out); }
++  dispose() {
++    this.root.removeFromParent(); this.shadow.material.dispose(); this.nameTexture.dispose(); this.nameTag.material.dispose();
++    const skeletons = new Set(); this.model.traverse((o) => { if (o.isSkinnedMesh) skeletons.add(o.skeleton); });
++    for (const skeleton of skeletons) skeleton.dispose();
++  }
++}
++export class PlayerCharacters {
++  constructor(scene) { this.scene = scene; this.templates = new Map(); this.free = new Map(); this.all = []; }
++  async prepare(id) {
++    id = characterConfig(id).id;
++    if (id !== "capsule" && !this.templates.has(id)) this.templates.set(id, await prepareCharacter(id));
++  }
++  acquire(id, name = "", color) {
++    id = characterConfig(id).id;
++    if (id !== "capsule" && !this.templates.has(id)) throw Error("Prepare o personagem antes de usá-lo: " + id);
++    const list = this.free.get(id), actor = list?.pop() || (id === "capsule" ? new Actor(this.scene, 0, true) : new ImportedPlayer(this.scene, id, this.templates.get(id)));
++    if (!this.all.includes(actor)) this.all.push(actor);
++    actor.character = id; actor.reset(name, color); actor.nameTag.visible = true; return actor;
++  }
++  release(actor) {
++    actor.root.visible = false;
++    if (!this.free.has(actor.character)) this.free.set(actor.character, []);
++    this.free.get(actor.character).push(actor);
++  }
++}
+--- a/client/js/rig-animation.js
++++ b/client/js/rig-animation.js
+@@ -0,0 +1,67 @@
++import * as T from "three";
++// UPDATE: os quatro FBX têm rig, mas NÃO têm clips. Anime os próprios ossos
++// enviados; nenhuma malha é substituída. Eixos são convertidos para o espaço
++// de cada pai para suportar rigs exportados com orientações locais diferentes.
++const roles = {
++  leftLeg: ["Left_leg", "Thigh_L"], rightLeg: ["Right_leg", "Thigh_R"],
++  leftKnee: ["Left_knee", "Knee_L", "Calf_L"], rightKnee: ["Right_knee", "Knee_R", "Calf_R"],
++  leftArm: ["Left_arm", "Arm_L", "UpperArm_L"], rightArm: ["Right_arm", "Arm_R", "UpperArm_R"],
++  leftElbow: ["Left_elbow", "Elbow_L", "ForeArm_L"], rightElbow: ["Right_elbow", "Elbow_R", "ForeArm_R"],
++  spine: ["Spine"], chest: ["Chest"], head: ["Head"], rightHand: ["Right_wrist", "Wrist_R", "Hand_R"],
++};
++export class RigAnimation {
++  constructor(model) {
++    this.model = model; this.roles = {}; this.q = new T.Quaternion(); this.temp = new T.Quaternion();
++    const bones = new Map(); model.updateMatrixWorld(true);
++    model.traverse((o) => { if (o.isBone && !bones.has(o.name)) bones.set(o.name, o); });
++    for (const [role, names] of Object.entries(roles)) {
++      const bone = names.map((name) => bones.get(name)).find(Boolean); if (!bone) continue;
++      const inverse = bone.parent.getWorldQuaternion(new T.Quaternion()).invert();
++      this.roles[role] = { bone, rest: bone.quaternion.clone(), x: new T.Vector3(1, 0, 0).applyQuaternion(inverse), z: new T.Vector3(0, 0, 1).applyQuaternion(inverse) };
++    }
++    this.secondary = [];
++    for (const [name, bone] of bones) if (/^(Left_Coat_[12]|Right_Coat_[12]|Sp_Hi_Jacket|Sp_Hi_Tail|Sp_Hi_MSkirt)/.test(name) && !/_end|_Handle/.test(name) && this.secondary.length < 18) {
++      const inverse = bone.parent.getWorldQuaternion(new T.Quaternion()).invert();
++      this.secondary.push({ bone, rest: bone.quaternion.clone(), x: new T.Vector3(1, 0, 0).applyQuaternion(inverse), z: new T.Vector3(0, 0, 1).applyQuaternion(inverse) });
++    }
++    const clips = model.animations || [];
++    if (clips.length) {
++      this.mixer = new T.AnimationMixer(model); this.actions = {};
++      for (const [state, pattern] of Object.entries({ idle: /idle|stand|rest/i, walk: /walk/i, run: /run|sprint/i, jump: /jump/i })) {
++        const clip = clips.find((c) => pattern.test(c.name));
++        if (clip) {
++          // Transformações de raiz não deslocam o collider nem duplicam movimento.
++          const copy = clip.clone(); copy.tracks = copy.tracks.filter((track) => !/^(root|hips|hipstranslation)\.position$/i.test(track.name));
++          this.actions[state] = this.mixer.clipAction(copy);
++        }
++      }
++    }
++  }
++  pose(item, x, z, blend) {
++    if (!item) return;
++    this.q.setFromAxisAngle(item.x, x); this.temp.setFromAxisAngle(item.z, z);
++    this.q.multiply(this.temp).multiply(item.rest); item.bone.quaternion.slerp(this.q, blend);
++  }
++  update(s, dt, t, instant = false) {
++    const state = (s.y || 0) > 0.025 ? "jump" : s.moving ? s.sprinting ? "run" : "walk" : "idle";
++    if (this.actions?.[state]) {
++      if (this.current !== state) { this.actions[this.current]?.fadeOut(0.18); this.actions[state].reset().fadeIn(0.18).play(); this.current = state; }
++      this.mixer.update(dt); return;
++    }
++    const blend = instant ? 1 : 1 - Math.exp(-14 * dt), running = state === "run", walking = state === "walk" || running;
++    const phase = t * (running ? 11 : 6), swing = walking ? Math.sin(phase) * (running ? 0.6 : 0.36) : 0;
++    const crouch = state === "jump" ? 0.35 : 0, r = this.roles;
++    this.pose(r.leftLeg, swing - crouch, 0, blend); this.pose(r.rightLeg, -swing - crouch, 0, blend);
++    this.pose(r.leftKnee, Math.max(0, -swing) * 0.9 + crouch * 1.4, 0, blend);
++    this.pose(r.rightKnee, Math.max(0, swing) * 0.9 + crouch * 1.4, 0, blend);
++    // T pose -> braços relaxados; o direito segura a pistola adicionada ao rig.
++    this.pose(r.leftArm, -swing * 0.5, -1.25, blend);
++    this.pose(r.rightArm, -0.45 - (s.pitch || 0) * 0.4 - swing * 0.09, 1.05, blend);
++    this.pose(r.leftElbow, -0.12 - Math.abs(swing) * 0.2, 0, blend);
++    this.pose(r.rightElbow, -0.75, 0, blend);
++    this.pose(r.spine, running ? 0.1 : Math.sin(t * 1.9) * 0.012, 0, blend);
++    this.pose(r.chest, Math.sin(t * 1.9) * 0.014, 0, blend);
++    this.pose(r.head, -(s.pitch || 0) * 0.25, Math.sin(t * 1.4) * 0.018, blend);
++    for (let i = 0; i < this.secondary.length; i++) this.pose(this.secondary[i], (running ? 0.12 : 0) + Math.sin(t * 3 + i) * (walking ? 0.055 : 0.014), 0, blend);
++  }
++}
+--- a/client/js/world-view.js
++++ b/client/js/world-view.js
+@@ -2,6 +2,8 @@
+ import { CELL, CHUNK, HEIGHT, SPAWN, RELAYS, hash, random, supply } from "/shared/world.js";
+ import { levelConfig } from "/shared/levels.js";
+ import { texture, labelTexture } from "./textures.js";
++import { ChunkLoader } from "./chunk-loader.js";
++import { instantiateMedkit } from "./model-assets.js";
+ const SIZE = CELL * CHUNK, CAPACITY = 16;
+ // ALTERADO: chunks reutilizáveis, uma montagem por quadro, luzes em cache e
+ // geometria instanciada para paredes, luminárias, umidade, vigas e canos.
+@@ -11,6 +13,7 @@
+       fixtures: [], lights: [], selected: [], queue: [], clock: -1, cx: null, cz: null,
+       stats: { builds: 0, maxBuildMs: 0, buildsThisFrame: 0, lightingUpdates: 0, capacity: CAPACITY } });
+     this.cfg = levelConfig(world.level);
++    this.chunkLoader = new ChunkLoader(world);
+     this.dummy = new T.Object3D(); this.temp = new T.Vector3();
+     this.frustum = new T.Frustum(); this.projection = new T.Matrix4();
+     this.wallGeo = new T.BoxGeometry(CELL, HEIGHT, CELL);
+@@ -62,17 +65,35 @@
+     const failures = this.instance(this.fixtureGeo, this.brokenMat, 36);
+     const wet = this.instance(this.wetGeo, this.wetMat, 6), pipes = this.instance(this.pipeGeo, this.pipeMat, 80), beams = this.instance(this.beamGeo, this.frameMat, 12);
+     const crate = new T.Group(), box = new T.Mesh(this.crateGeo, this.crateMat[0]), band = new T.Mesh(this.bandGeo, this.bandMat[0]);
+-    box.castShadow = true; crate.add(box, band);
++    const medkit = instantiateMedkit();
++    box.castShadow = true; crate.add(box, band); if (medkit) crate.add(medkit);
+     const water = new T.Mesh(this.poolGeo, this.waterMat); water.rotation.x = -Math.PI / 2; water.position.y = 0.035; water.visible = false;
+     group.add(floor, ceiling, walls, trim, frames, bulbs, failures, wet, pipes, beams, crate, water);
+-    return { group, floor, ceiling, walls, trim, frames, bulbs, failures, wet, pipes, beams, crate, box, band, water,
++    return { group, floor, ceiling, walls, trim, frames, bulbs, failures, wet, pipes, beams, crate, box, band, water, medkit,
+       fixtures: Array.from({ length: 36 }, () => ({ pos: new T.Vector3(), phase: 0, broken: false, off: false })),
+       fixtureCount: 0, bounds: new T.Box3(), stamp: 0, key: null, cx: 0, cz: 0 };
+   }
++  // UPDATE: cada chunk do pool recebe uma cópia visual uma única vez. Não
++  // altera supply(), coleta (2,8 m), cura (45), spawn, som ou estado usado.
++  installMedkits() {
++    for (const c of this.pool) if (!c.medkit) {
++      c.medkit = instantiateMedkit(); if (!c.medkit) continue;
++      c.crate.add(c.medkit);
++      if (c.item) this.setSupplyModel(c);
++    }
++  }
++  setSupplyModel(c) {
++    const med = c.item.type === "med", type = med ? 1 : 0;
++    c.crate.position.y = med ? 0 : 0.3;
++    c.box.visible = c.band.visible = !med;
++    c.box.material = this.crateMat[type]; c.band.material = this.bandMat[type];
++    if (c.medkit) c.medkit.visible = med;
++  }
+   matrix(mesh, index, x, y, z, sx = 1, sy = 1, sz = 1, rx = 0, ry = 0, rz = 0) {
+     const d = this.dummy; d.position.set(x, y, z); d.scale.set(sx, sy, sz); d.rotation.set(rx, ry, rz); d.updateMatrix(); mesh.setMatrixAt(index, d.matrix);
+   }
+   build(cx, cz) {
++    if (!this.chunkLoader.ready(cx, cz)) return false;
+     const started = performance.now(), key = cx + "," + cz;
+     let c = this.pool.find((c) => c.key === null);
+     if (!c) {
+@@ -125,8 +146,10 @@
+     }
+     c.item = supply(cx, cz, this.world.seed); const type = c.item.type === "ammo" ? 0 : 1;
+     c.crate.position.set(c.item.x - cx * SIZE, 0.3, c.item.z - cz * SIZE); c.box.material = this.crateMat[type]; c.band.material = this.bandMat[type];
++    this.setSupplyModel(c);
+     this.chunks.set(key, c); this.refreshFixtures();
+     this.stats.builds++; this.stats.buildsThisFrame++; this.stats.maxBuildMs = Math.max(this.stats.maxBuildMs, performance.now() - started);
++    return true;
+   }
+   refreshFixtures() {
+     this.fixtures.length = 0;
+@@ -168,6 +191,7 @@
+     const cx = Math.floor(pos.x / SIZE), cz = Math.floor(pos.z / SIZE);
+     if (cx !== this.cx || cz !== this.cz) {
+       this.cx = cx; this.cz = cz; this.queue.length = 0;
++      this.chunkLoader.prefetch(cx, cz);
+       const wanted = [];
+       for (let z = cz - 1; z <= cz + 1; z++) for (let x = cx - 1; x <= cx + 1; x++) wanted.push({ x, z, d: Math.abs(x - cx) + Math.abs(z - cz) });
+       wanted.sort((a, b) => a.d - b.d);
+@@ -178,7 +202,7 @@
+       this.refreshFixtures();
+     }
+     // Apenas uma montagem por quadro; os objetos/buffers já existem no pool.
+-    if (this.queue.length) { const q = this.queue.shift(); this.build(q.x, q.z); }
++    if (this.queue.length) { const q = this.queue[0]; if (this.build(q.x, q.z)) this.queue.shift(); }
+     // Antecipe um setor antes da fronteira, usando tempo ocioso do mesmo pool.
+     if (!this.queue.length) {
+       const lx = pos.x - cx * SIZE, lz = pos.z - cz * SIZE;
+@@ -214,8 +238,9 @@
+     if (this.waterMap && !reduced) this.waterMap.offset.set(t * 0.009, t * 0.006);
+   }
+   dispose() {
++    this.chunkLoader.dispose();
+     const geos = new Set(), materials = new Set();
+-    for (const c of this.pool) { this.scene.remove(c.group); c.group.traverse((o) => { if (o.isInstancedMesh) o.dispose(); if (o.isMesh) { geos.add(o.geometry); materials.add(o.material); } }); }
++    for (const c of this.pool) { this.scene.remove(c.group); c.group.traverse((o) => { if (o.isInstancedMesh) o.dispose(); if (o.isMesh && !o.userData.sharedAsset) { geos.add(o.geometry); materials.add(o.material); } }); }
+     this.scene.remove(this.objectives);
+     this.objectives.traverse((o) => { if (o.isMesh) { geos.add(o.geometry); materials.add(o.material); if (o.material.map) o.material.map.dispose(); } });
+     for (const geo of geos) geo.dispose();
+--- a/client/style.css
++++ b/client/style.css
+@@ -584,3 +584,16 @@
+     gap: 8px;
+   }
+ }
++/* UPDATE 1.1.1: seleção responsiva, sem alterar o layout existente do jogo. */
++#characters { z-index: 50; }
++.character-panel { width: min(780px, 94vw); max-height: 94vh; overflow: auto; }
++.character-layout { display: grid; grid-template-columns: 200px 1fr; gap: 16px; }
++#character-list { display: grid; gap: 7px; align-content: start; }
++.character-card { display: flex; align-items: center; gap: 10px; text-align: left; padding: 7px 10px; min-height: 55px; }
++.character-card img { width: 42px; height: 50px; object-fit: contain; }
++.character-card.selected { border-color: #d6dfbc; background: #46533c; }
++#character-preview { width: 100%; height: 350px; border: 1px solid #566047; }
++#choose-character { text-align: left; width: 100%; margin: 0 0 14px; }
++@media (max-width: 560px) { .character-layout { grid-template-columns: 140px 1fr; gap: 8px; } #character-preview { height: 280px; } .character-card { font-size: 10px; padding: 5px; } .character-card img { width: 28px; height: 40px; } }
++#characters .character-panel { width: min(780px, 94vw); }
++#characters .character-card { display: flex; width: 100%; margin: 0; }
+--- a/docs/TESTES-1.1.0.md
++++ b/docs/TESTES-1.1.0.md
+@@ -0,0 +1,42 @@
++# Validação da entrega — ECHO 1.1.0
++
++## Executado neste ambiente
++
++- `npm test`: **19 testes aprovados**. Cobrem conectividade de mapas com quatro seeds e setores positivos/negativos, portais compatíveis, limite da cache, colisões, pulo, raycast, munição, cadência, recarga, dano, morte, reanimação, suprimentos, relés, extração, IA e seus três tipos. Preserva regressões de endereços HTTP/HTTPS, patrulha e ações durante desconexão do host. A atualização valida conectividade dos quatro níveis, dificuldade, objetivos/tempo, transição/inventário, cor, origem do disparo/câmera e autoridade do avanço de nível.
++- Integração Socket.IO: criação, entrada de dois jogadores, recusa de terceiro, seed igual, ausência de tokens nos snapshots, movimento, tiro, autorização de reinício e retomada pelo token.
++- `npm run test:browser`: navegador Chromium real em WebGL por software, com dois clientes. Verificados lobby, jogador remoto, Pointer Lock, movimento, disparo, recarga, salto, queda/reconexão do socket, F5, morte e reinício. Inclui reinício pelo host enquanto o cliente mantém o mouse capturado e uma tecla de movimento pressionada.
++- `npm run test:combat`: qualidade Alta com bloom/sombras, renderização dos três rigs, mira por mouse, tiros passando pelo socket/raycast até matar os três tipos, ataque chegando ao HUD, origem dos rastros coincidindo com a ponta física do cano, ativação dos objetivos finais e tela de vitória. Preserva a regressão da cadência dependente de FPS.
++- `npm run test:campaign`: dois navegadores reais; cápsula/cor personalizada, câmera V, modelos, os quatro mapas, progresso compartilhado, saídas bloqueadas, transição vista pelos dois, passagem do host, condição de 60 segundos, vitória e reinício.
++- `npm run test:performance`: caminhada real cruzando setores com mesma seed. Comparação sequencial 1.0.1/1.1.0: chamadas de desenho medianas 130 → 64, montagens por quadro 3 → 1. Dados completos e limites em `ATUALIZACAO-1.1.md`; não é um benchmark de GPU física.
++- Interface, cenário e monstros inspecionados por capturas de tela. O teste de dois jogadores usa qualidade Leve; o de combate usa Alta. Ambos usam WebGL por software, sem representar o desempenho de uma GPU de consumidor.
++- Arquivo único: extração de 59 arquivos comparada byte a byte com as fontes, instalação automática de 90 pacotes de produção, inicialização do servidor 1.1.0 e resposta dos recursos do navegador/Three.js/Socket.IO.
++- `npm run build:portable`: pacote Windows x64 gerado com electron-builder; Electron e dependências de execução incluídos. Os 18 arquivos de execução em client/server/shared/electron/assets foram comparados byte a byte dentro de app.asar; a versão e express/socket.io/three também foram conferidos.
++
++## Limites da verificação
++
++Este ambiente é Linux e não oferece uma sessão Windows. O `.exe` foi **compilado**, mas não foi aberto em Windows aqui. O jogo foi executado e testado no navegador com o mesmo código de cliente/servidor.
++
++O instalador NSIS completo exigiu Wine na tentativa anterior de compilação cruzada (1.0.1). Na 1.1.0 foi compilado somente o portátil Windows. Por isso a entrega inclui o portátil e os scripts para gerar instalador e portátil diretamente no Windows. Nenhum instalador parcial deve ser utilizado.
++
++Linux AppImage e macOS DMG possuem scripts de build, mas não foram compilados ou executados nesta entrega. Rede local e Socket.IO foram verificados no ambiente de teste; roteador, firewall, VPN, ngrok e duas máquinas físicas dependem da configuração do usuário e não foram testados remotamente.
++
++A comparação de desempenho usa o código 1.0.1 extraído da entrega anterior. Para repetir contra uma cópia local dessa versão, defina `ECHO_BASELINE` apontando para sua pasta e execute `npm run test:performance`; depois execute novamente sem essa variável.
++
++Os testes usam fixtures de estado exclusivamente dentro do processo de teste para posicionar monstros, verificar morte/reinício e alcançar os relés. A cena de inspeção dos rigs mantém a IA congelada; o teste de ataque usa a simulação real novamente. O servidor entregue não expõe uma API de teleporte, vida arbitrária ou comandos de desenvolvimento. Os testes não avaliam subjetivamente o som em fones ou caixas reais.
++
++## Reproduzir
++
++```bash
++npm ci
++npm test
++npx playwright install chromium
++npm run test:browser
++npm run test:combat
++npm run test:campaign
++npm run test:performance
++npm run bundle
++node Backrooms-ECHO-Completo.cjs --extract-only
++npm run build:portable
++```
++
++Capturas são gravadas em `test-results/`. O código dos testes está incluído para revisão e repetição.
+--- a/docs/TESTES.md
++++ b/docs/TESTES.md
+@@ -1,30 +1,28 @@
+-# Validação da entrega — ECHO 1.1.0
++# Validação — ECHO 1.1.1
+ 
+-## Executado neste ambiente
++## Executado
+ 
+-- `npm test`: **19 testes aprovados**. Cobrem conectividade de mapas com quatro seeds e setores positivos/negativos, portais compatíveis, limite da cache, colisões, pulo, raycast, munição, cadência, recarga, dano, morte, reanimação, suprimentos, relés, extração, IA e seus três tipos. Preserva regressões de endereços HTTP/HTTPS, patrulha e ações durante desconexão do host. A atualização valida conectividade dos quatro níveis, dificuldade, objetivos/tempo, transição/inventário, cor, origem do disparo/câmera e autoridade do avanço de nível.
+-- Integração Socket.IO: criação, entrada de dois jogadores, recusa de terceiro, seed igual, ausência de tokens nos snapshots, movimento, tiro, autorização de reinício e retomada pelo token.
+-- `npm run test:browser`: navegador Chromium real em WebGL por software, com dois clientes. Verificados lobby, jogador remoto, Pointer Lock, movimento, disparo, recarga, salto, queda/reconexão do socket, F5, morte e reinício. Inclui reinício pelo host enquanto o cliente mantém o mouse capturado e uma tecla de movimento pressionada.
+-- `npm run test:combat`: qualidade Alta com bloom/sombras, renderização dos três rigs, mira por mouse, tiros passando pelo socket/raycast até matar os três tipos, ataque chegando ao HUD, origem dos rastros coincidindo com a ponta física do cano, ativação dos objetivos finais e tela de vitória. Preserva a regressão da cadência dependente de FPS.
+-- `npm run test:campaign`: dois navegadores reais; cápsula/cor personalizada, câmera V, modelos, os quatro mapas, progresso compartilhado, saídas bloqueadas, transição vista pelos dois, passagem do host, condição de 60 segundos, vitória e reinício.
+-- `npm run test:performance`: caminhada real cruzando setores com mesma seed. Comparação sequencial 1.0.1/1.1.0: chamadas de desenho medianas 130 → 64, montagens por quadro 3 → 1. Dados completos e limites em `ATUALIZACAO-1.1.md`; não é um benchmark de GPU física.
+-- Interface, cenário e monstros inspecionados por capturas de tela. O teste de dois jogadores usa qualidade Leve; o de combate usa Alta. Ambos usam WebGL por software, sem representar o desempenho de uma GPU de consumidor.
+-- Arquivo único: extração de 59 arquivos comparada byte a byte com as fontes, instalação automática de 90 pacotes de produção, inicialização do servidor 1.1.0 e resposta dos recursos do navegador/Three.js/Socket.IO.
+-- `npm run build:portable`: pacote Windows x64 gerado com electron-builder; Electron e dependências de execução incluídos. Os 18 arquivos de execução em client/server/shared/electron/assets foram comparados byte a byte dentro de app.asar; a versão e express/socket.io/three também foram conferidos.
++- `npm test`: 28 testes aprovados. Incluem os 19 testes anteriores, previsão com latência/jitter, fronteiras de chunks positivos/negativos, câmera sem salto na recepção de snapshots, velocidade em 15/60/144 FPS, recuperação de frame de 400 ms, timestamp de rAF anterior ao timer, orçamento de física autoritativo, revisão do nível, identidade de personagens e tiro/recarga vinculados ao comando confirmado e ausência de contagem dupla de gravidade/stamina em lotes atrasados e coleta confirmada mantendo 45 HP/uso único.
++- FBX: comparação da bind pose e de vértices amostrados antes/depois da consolidação de ossos; nenhum deslocamento acima da tolerância de 0,0001 unidades. Hashes dos FBX, GLB e texturas copiados comparados ao manifesto dos arquivos enviados.
++- `npm run test:browser`: Chromium/WebGL real com dois clientes, Pointer Lock, movimento, tiro, recarga, pulo, reconexão, F5, reinício enquanto uma tecla está pressionada, morte e reinício. Sem erros de página/recursos.
++- `npm run test:combat`: qualidade Alta/bloom/sombras; três tipos de criatura, mira por eventos de mouse, dano/morte, ataque no HUD, origem visual do tracer idêntica ao cano, objetivos finais e vitória. A fixture congela somente `updateMonsters`; mantém os colliders durante os tiros confirmados, sem modificar a IA entregue.
++- `npm run test:campaign`: quatro níveis completos e sincronizados em dois navegadores; objetivos/portas, transições, condição de sobrevivência, vitória e reinício; explorador original/cor/câmera preservados.
++- `npm run test:models`: cinco prévias 3D inspecionadas; quatro FBX em escala de 1,60 m, materiais/texturas, rigs e animações verificadas. Escolha salva após F5; Agnes e Metal Sonic usados por dois jogadores e vistos pelo outro cliente; tiro do novo personagem em terceira pessoa aceito pelo servidor. Novo med kit GLB com albedo/normal embutidos, dimensão maior de 0,68 m, base a 0,004 m do chão, persistência do cache após troca de mapa, coleta e cura de 45 HP.
++- O executável portátil Windows x64 foi compilado com electron-builder. Cliente/servidor/shared/Electron/assets no `app.asar` são comparados byte a byte às fontes finais; dependências locais express/socket.io/three são incluídas. O extrator CJS completo é verificado contra seus arquivos originais após extração.
+ 
+-## Limites da verificação
++O teste de caminhada e os dados da câmera estão em `docs/PERFORMANCE-1.1.1.json`. Ele cruza uma fronteira de setor, verifica cache/Worker, no máximo uma montagem por quadro, capacidade de 16 chunks, orçamento de luzes, previsão sem divergência e deslocamento da câmera compatível com velocidade/tempo. Não é um benchmark de GPU de consumidor.
+ 
+-Este ambiente é Linux e não oferece uma sessão Windows. O `.exe` foi **compilado**, mas não foi aberto em Windows aqui. O jogo foi executado e testado no navegador com o mesmo código de cliente/servidor.
++## Limites
+ 
+-O instalador NSIS completo exigiu Wine na tentativa anterior de compilação cruzada (1.0.1). Na 1.1.0 foi compilado somente o portátil Windows. Por isso a entrega inclui o portátil e os scripts para gerar instalador e portátil diretamente no Windows. Nenhum instalador parcial deve ser utilizado.
++O ambiente é Linux, com WebGL renderizado por software. As taxas de FPS observadas aqui não representam uma GPU real e não garantem 60 FPS no seu computador. Os testes verificam continuidade de posição e eliminação de correções bruscas; nenhum software transforma um dispositivo sem capacidade gráfica em um renderizador de alta taxa de quadros.
+ 
+-Linux AppImage e macOS DMG possuem scripts de build, mas não foram compilados ou executados nesta entrega. Rede local e Socket.IO foram verificados no ambiente de teste; roteador, firewall, VPN, ngrok e duas máquinas físicas dependem da configuração do usuário e não foram testados remotamente.
++O portátil `.exe` foi compilado e seu conteúdo foi validado, mas não foi aberto em uma sessão Windows. Abra-o no seu PC para conferir GPU, áudio e firewall. Linux/macOS têm os scripts originais de build, mas não foram compilados neste update. Porta de roteador, VPN, ngrok e áudio em fones dependem da configuração física do usuário.
+ 
+-A comparação de desempenho usa o código 1.0.1 extraído da entrega anterior. Para repetir contra uma cópia local dessa versão, defina `ECHO_BASELINE` apontando para sua pasta e execute `npm run test:performance`; depois execute novamente sem essa variável.
++Os FBX recebidos não têm clips; suas animações são procedurais nos rigs originais. Fenomeno não inclui a textura difusa de cabelo, então usa a textura de cabelo fornecida. Os quatro maiores pesos por vértice são usados pelo FBXLoader quando há mais influências. Nenhum FBX/GLB/PNG/JPEG original foi modificado.
+ 
+-Os testes usam fixtures de estado exclusivamente dentro do processo de teste para posicionar monstros, verificar morte/reinício e alcançar os relés. A cena de inspeção dos rigs mantém a IA congelada; o teste de ataque usa a simulação real novamente. O servidor entregue não expõe uma API de teleporte, vida arbitrária ou comandos de desenvolvimento. Os testes não avaliam subjetivamente o som em fones ou caixas reais.
++Os testes usam fixtures locais para posicionar jogadores/monstros e completar objetivos; não existe API de teleporte/vida arbitrária no servidor entregue. Diagnósticos do cliente são somente leitura.
+ 
+-## Reproduzir
++## Repetir
+ 
+ ```bash
+ npm ci
+@@ -33,10 +31,11 @@
+ npm run test:browser
+ npm run test:combat
+ npm run test:campaign
++npm run test:models
+ npm run test:performance
+ npm run bundle
+ node Backrooms-ECHO-Completo.cjs --extract-only
+ npm run build:portable
+ ```
+ 
+-Capturas são gravadas em `test-results/`. O código dos testes está incluído para revisão e repetição.
++O relatório da versão anterior foi conservado em `docs/TESTES-1.1.0.md`. Instruções de aplicação/teste manual: `docs/UPDATE-1.1.1.md`.
+--- a/docs/UPDATE-1.1.1.md
++++ b/docs/UPDATE-1.1.1.md
+@@ -0,0 +1,66 @@
++# Update incremental 1.1.1
++
++Este update foi aplicado sobre o Backrooms ECHO 1.1.0 existente. O projeto anterior está preservado, sem alterações, em `backups/Backrooms-ECHO-1.1.0-Codigo-fonte.zip`.
++
++## O que mudou
++
++- Movimento: previsão local e autoridade usam passos de 30 Hz e comandos numerados. Snapshots confirmam comandos; a previsão reaplica somente os ainda não confirmados. A câmera interpola poses e suaviza correções com colisão contínua. Não existe snapping do jogador para células.
++- O relógio monotônico impede que um timestamp antigo de `requestAnimationFrame` conte novamente tempo que o timer/socket já processou. A física não é contada de novo enquanto um lote está em trânsito. O servidor recupera ticks atrasados e usa crédito de tempo limitado para consumir comandos acumulados, sem permitir velocidade extra. Tiros, recargas e interações aguardam a confirmação da posição correspondente: o disparo continua saindo do cano visível e mantém a validação de alcance. A munição prevista não é reposta por um snapshot anterior ao disparo.
++- A grade dos chunks é antecipada num Web Worker, com cache; a montagem visual conserva o pool de 16 chunks e monta no máximo um por quadro. Sem suporte a Worker, mantém a montagem gradual existente. As colisões continuam usando coordenadas globais e a mesma função compartilhada; não há colliders novos por chunk nem recentralização do mundo.
++- Seleção de personagem no lobby: explorador original, Vergil, Metal Sonic, Fenomeno e Agnes Tachyon. Prévia 3D, miniaturas, escolha em `localStorage` e identidade sincronizada nos dois jogadores, reconexão, reinício e quatro níveis.
++- Os quatro FBX originais e suas texturas estão em `assets/models/`. Os arquivos copiados conservam os SHA-256 registrados em `assets/models/manifest.json`. Escala/pivô são ajustados em grupos externos, sem remodelar a geometria. A altura visual é 1,60 m, alinhada ao explorador atual; câmera, velocidades e collider continuam compartilhados.
++- Os FBX recebidos têm esqueletos, mas nenhum clip de animação. Idle, andar, correr e pular são movimentos procedurais sobre os ossos originais. Não são animações capturadas/prontas do arquivo. O sistema também reconhece clips idle/walk/run/jump em futuros modelos.
++- Ossos duplicados na mesma bind pose são consolidados, com teste de poses/vértices antes e depois: Vergil elimina 194 duplicados e Agnes 2.933. Skeletons idênticos compartilham buffers. Nenhuma malha ou material é removido.
++- O último ZIP contém `Med-kit .glb`, não FBX. Ele é usado diretamente com as texturas embutidas. O med kit fica apoiado no chão (folga de 4 mm), dimensão maior de 68 cm. Caixas de munição continuam como antes.
++
++## O que permaneceu intacto
++
++`client/js/actors.js` (explorador original, monstros e arma), `shared/world.js` (mapas, colisões e velocidades), `shared/levels.js`, `shared/weapon.js`, áudio, efeitos, texturas procedurais e Electron não foram reescritos. Permanecem os quatro níveis, dificuldade, objetivos, vida, stamina, tiros, recarga, lanterna, multiplayer, reanimação e controles existentes.
++
++Med kits: cura de 45 HP, limite de 100, spawns determinísticos, distância de coleta de 2,8 m, tecla E, som e uso único permanecem iguais. O collider visual não impõe colisão sólida nova: a coleta usa a mesma área anterior.
++
++## Aplicar sobre seu jogo
++
++1. Feche o servidor/jogo. Preserve uma cópia da sua pasta atual.
++2. Extraia `Backrooms-ECHO-Update-1.1.1.zip` NA pasta que contém seu `package.json`. Ele contém apenas arquivos novos/alterados e seus diretórios relativos. Autorize substituir esses arquivos.
++3. Rode `npm install` e `npm start`, ou use `iniciar.bat`.
++4. Atualize os dois jogadores juntos. Clientes e servidor 1.1.1 compartilham o novo protocolo de previsão. O servidor ainda aceita entradas antigas, mas a correção de movimento exige o cliente atualizado.
++5. Para atualizar o aplicativo desktop, use o novo portátil incluído no pacote completo ou execute `npm run build`. O executável antigo não lê automaticamente o código novo extraído em outra pasta.
++
++`Backrooms-ECHO-Codigo-fonte.zip` contém o projeto atualizado completo. `Backrooms-ECHO-Completo-Windows.zip` inclui também o portátil, já com servidor e modelos embutidos.
++
++## Teste manual
++
++1. No lobby, abra **PERSONAGEM**. Veja todos os cinco modelos, selecione um e confirme **USAR PERSONAGEM**. Recarregue a página: a escolha deve permanecer.
++2. Crie uma sala. Pressione **V** para enxergar o personagem. Teste WASD, Shift e Espaço. A primeira pessoa e suas mãos/arma originais continuam disponíveis; V mostra o FBX completo.
++3. Para testar uma fronteira facilmente, caminhe pelo corredor central: alinhe-se à coluna ou linha central do setor, indicada no HUD, e siga até o indicador SETOR mudar. As fronteiras ficam a cada 38,4 m. A mudança de setor não deve alterar a velocidade nem causar correção brusca da câmera. O FPS já aparece no HUD.
++4. Ande, corra, pule e solte as teclas perto de paredes e fronteiras; confira colisão e parada contínuas. Troque a qualidade Alta/Leve para separar limite da GPU de correção de posição.
++5. Em outro navegador/PC, entre com outro personagem. Confira os dois modelos, movimento, sons, tiros e recarga. Recarregue o cliente para testar reconexão; complete um nível e confira a escolha preservada.
++6. Procure um kit médico, perca vida e aperte E perto dele. Deve aparecer o modelo enviado apoiado no chão, curar 45 HP (máximo 100), tocar o mesmo som e desaparecer para ambos. Com vida cheia ele continua sem ser consumido. Caixas de munição não mudaram.
++
++## Arquivos para adicionar personagens depois
++
++Adicione uma entrada em `shared/characters.js`: `id`, `name`, `model`, `thumbnail`, `height` e `rotationY`. Copie FBX/texturas para `assets/models/<id>/`. `aliases` resolve referências de textura com nomes diferentes; `materials` liga texturas a materiais que vieram sem mapas. A escolha é validada no servidor pela mesma lista. Para um rig com nomes diferentes, ajuste `roles` em `client/js/rig-animation.js`. Quando não houver rig nem clips, são necessárias animações/modelagem adicionais; não se inventa um esqueleto incompatível.
++
++## Problemas corrigidos na importação
++
++Vergil referenciava um PNG inexistente, vinha com opacidade zero e usava o albedo como máscara de transparência; o importador usa o PNG fornecido, torna o material visível e mantém o recorte pelo alfa correto. Metal Sonic referenciava `_abd` quando o arquivo é `_alb`. Agnes referenciava uma pasta `Texture2D` inexistente. Fenomeno não ligava texturas aos materiais: o importador liga os PNG fornecidos; o cabelo usa a textura `hair_shad_c` recebida, pois o ZIP não inclui `hair_diff`.
++
++Three.js/FBXLoader usa até quatro influências de ossos por vértice. Nos FBX com mais influências, o loader mantém as quatro maiores e normaliza os pesos; os arquivos originais continuam intactos. Animações procedurais podem diferir de animações oficiais do personagem.
++
++## Comandos
++
++```bash
++npm install
++npm start
++npm test
++npx playwright install chromium
++npm run test:browser
++npm run test:combat
++npm run test:campaign
++npm run test:models
++npm run test:performance
++npm run build
++```
++
++Nenhum novo controle de teclado foi adicionado. A seleção acontece no lobby; **V** já era o controle para alternar câmera.
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "backrooms-echo",
+-  "version": "1.1.0",
++  "version": "1.1.1",
+   "description": "Horror 3D cooperativo para dois jogadores",
+   "type": "module",
+   "main": "electron/main.cjs",
+@@ -23,7 +23,8 @@
+     "test:combat": "node tests/combat-browser.mjs",
+     "test:campaign": "node tests/campaign-browser.mjs",
+     "test:performance": "node tests/performance-browser.mjs",
+-    "bundle": "node scripts/bundle.mjs"
++    "bundle": "node scripts/bundle.mjs",
++    "test:models": "node tests/models-browser.mjs"
+   },
+   "dependencies": {
+     "express": "5.2.1",
+--- a/scripts/bundle.mjs
++++ b/scripts/bundle.mjs
+@@ -13,12 +13,12 @@
+     if (e.isDirectory()) await collect(name);
+     else if (e.isFile()) {
+       const bytes = await readFile(path.join(root, name));
+-      const binary = /\.(png|jpe?g|ico|woff2?|zip|exe)$/i.test(name);
++      const binary = /\.(png|jpe?g|ico|woff2?|zip|exe|fbx|glb|bin|tga)$/i.test(name);
+       files.push({ name, encoding: binary ? "base64" : "utf8", content: bytes.toString(binary ? "base64" : "utf8") });
+     }
+   }
+ }
+-for (const dir of ["client", "server", "shared", "electron", "assets", "scripts", "tests", "docs", "original"]) await collect(dir);
++for (const dir of ["client", "server", "shared", "electron", "assets", "scripts", "tests", "docs", "original", "backups"]) await collect(dir);
+ for (const name of ["package.json", "package-lock.json", "README.md", "LEIA_PRIMEIRO.txt", "LICENSE", "iniciar.bat", "iniciar.sh", "gerar-exe.bat", ".gitignore"]) {
+   files.push({ name, encoding: "utf8", content: await readFile(path.join(root, name), "utf8") });
+ }
+--- a/server/index.js
++++ b/server/index.js
+@@ -33,7 +33,7 @@
+     r.setHeader("X-Content-Type-Options", "nosniff");
+     r.setHeader(
+       "Content-Security-Policy",
+-      "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' http: https: ws: wss:; media-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
++      "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' blob: http: https: ws: wss:; media-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+     );
+     next();
+   });
+@@ -141,7 +141,7 @@
+           return ack({ error: "Sala cheia: limite de dois jogadores." });
+         pid = randomBytes(8).toString("hex");
+         token = randomBytes(24).toString("hex");
+-        const p = r.sim.add(pid, name, d.color);
++        const p = r.sim.add(pid, name, d.color, d.character);
+         p.token = token;
+         p.socket = s.id;
+         if (!r.host) r.host = pid;
+@@ -165,12 +165,12 @@
+       const r = resolve();
+       return r?.sim.players.get(r.host)?.connected ? r : null;
+     };
+-    s.on("shoot", (d) => playing()?.sim.shoot(s.data.pid, d));
+-    s.on("reload", () => playing()?.sim.reload(s.data.pid));
+-    s.on("interact", () => {
++    s.on("shoot", (d) => playing()?.sim.queueShot(s.data.pid, d));
++    s.on("reload", (d) => playing()?.sim.queueReload(s.data.pid, d));
++    s.on("interact", (d) => {
+       const r = playing(); if (!r) return;
+       const completed = !!r.sim.transition || r.sim.won;
+-      r.sim.interact(s.data.pid);
++      r.sim.queueInteract(s.data.pid, d);
+       // NOVO: marcos da campanha usam entrega confiável, não snapshots voláteis.
+       if (!completed && (r.sim.transition || r.sim.won))
+         io.to(r.code).emit("stage-complete", snapshot(r));
+@@ -208,6 +208,8 @@
+         const p = r.sim.players.get(s.data.pid);
+         p.connected = false;
+         p.input = {};
++        p.inputQueue = []; p.commandMode = false; p.commandReceived = p.seq; p.physicsCredit = 0;
++        p.pendingShots = [];
+         p.moving = false;
+         p.disconnectedAt = Date.now();
+         io.to(r.code).emit(
+@@ -218,8 +220,14 @@
+     });
+   });
+   // 30 Hz de simulação; snapshots a 15 Hz. Nenhum segredo de sessão é transmitido.
+-  let tick = 0;
++  let tick = 0, simulationClock = performance.now(), simulationAccumulator = 0;
+   const timer = setInterval(() => {
++    // UPDATE: setInterval pode atrasar com carga. Recuperar passos fixos evita
++    // que o relógio do servidor fique para trás da previsão local.
++    const now = performance.now();
++    simulationAccumulator += Math.min(1, Math.max(0, (now - simulationClock) / 1000)); simulationClock = now;
++    const steps = Math.floor((simulationAccumulator + 1e-9) * 30);
++    simulationAccumulator -= steps / 30;
+     for (const r of rooms.values()) {
+       for (const [id, p] of r.sim.players)
+         if (!p.connected && Date.now() - p.disconnectedAt > 45000) {
+@@ -230,10 +238,12 @@
+           r.sim.players.delete(id);
+         }
+       if (!rooms.has(r.code)) continue;
+-      if (r.sim.players.get(r.host)?.connected) r.sim.update(1 / 30);
+-      if (tick % 2 === 0) io.to(r.code).volatile.emit("snapshot", snapshot(r));
++      const completed = !!r.sim.transition || r.sim.won;
++      if (r.sim.players.get(r.host)?.connected) for (let step = 0; step < steps; step++) r.sim.update(1 / 30);
++      if (!completed && (r.sim.transition || r.sim.won)) io.to(r.code).emit("stage-complete", snapshot(r));
++      if (steps && Math.floor((tick + steps) / 2) !== Math.floor(tick / 2)) io.to(r.code).volatile.emit("snapshot", snapshot(r));
+     }
+-    tick++;
++    tick += steps;
+   }, 1000 / 30);
+   try {
+     await new Promise((resolve, reject) => {
+--- a/server/simulation.js
++++ b/server/simulation.js
+@@ -16,6 +16,7 @@
+ import { LEVELS, levelConfig, levelSeed } from "../shared/levels.js";
+ import { eyePosition, cameraPosition, defaultMuzzle, direction } from "../shared/weapon.js";
+ import { playerColor } from "../shared/config.js";
++import { characterConfig } from "../shared/characters.js";
+ // O servidor do host é a autoridade de física, IA, munição, dano e objetivos.
+ export class Simulation {
+   constructor(seed, emit = () => {}) {
+@@ -32,6 +33,7 @@
+   }
+   // NOVO: troca de nível mantém a sala, seed base e identidade dos jogadores.
+   loadLevel(level, restart = false) {
++    this.revision = (this.revision || 0) + 1;
+     this.level = level;
+     this.mapSeed = levelSeed(this.seed, level);
+     this.world = new World(this.mapSeed, level);
+@@ -51,17 +53,20 @@
+         ammo: restart ? 12 : p.ammo,
+         reserve: restart ? 60 : Math.min(120, p.reserve + 24),
+         input: {},
++        inputQueue: [], pendingShots: [], commandMode: false, commandReceived: 0, physicsCredit: 0,
+         lastInput: this.time,
+         connected: p.connected,
+       });
+   }
+-  add(id, name, color) {
++  add(id, name, color, character) {
+     const p = {
+       ...freshPlayer(id, name, this.players.size),
+       input: {},
+-      lastInput: 0,
++      physicsCredit: 0,
++      lastInput: this.time,
+       connected: true,
+       color: playerColor(color),
++      character: characterConfig(character).id,
+     };
+     this.players.set(id, p);
+     return p;
+@@ -71,15 +76,23 @@
+     if (!p || !d || typeof d !== "object") return;
+     const n = (v, a, b) =>
+       Number.isFinite(v) ? Math.max(a, Math.min(b, v)) : 0;
+-    p.input = {
+-      forward: n(d.forward, -1, 1),
+-      side: n(d.side, -1, 1),
+-      yaw: n(d.yaw, -1e5, 1e5),
+-      pitch: n(d.pitch, -1.45, 1.45),
+-      sprint: !!d.sprint,
+-      jump: !!d.jump,
+-      seq: n(d.seq, 0, 1e12),
+-    };
++    const sanitize = (c) => ({ forward: n(c.forward, -1, 1), side: n(c.side, -1, 1),
++      yaw: n(c.yaw, -1e5, 1e5), pitch: n(c.pitch, -1.45, 1.45),
++      sprint: !!c.sprint, jump: !!c.jump, seq: n(c.seq, 0, 1e12) });
++    // UPDATE 1.1.1: comandos confirmados, com passo fixo autoritativo. A revisão
++    // descarta entradas em trânsito de um nível/reinício anterior.
++    if (Array.isArray(d.commands)) {
++      if (d.revision !== this.revision || d.commands.length > 32) return;
++      if (!p.commandMode) p.physicsCredit = Math.min(1, Math.max(0, this.time - p.lastInput));
++      p.commandMode = true; p.inputQueue ||= [];
++      for (const c of d.commands) {
++        if (!c || !Number.isSafeInteger(c.seq) || c.seq <= (p.commandReceived || p.seq) || p.inputQueue.length >= 64) continue;
++        p.inputQueue.push(sanitize(c)); p.commandReceived = c.seq;
++      }
++    } else {
++      // Compatibilidade com os clientes/testes anteriores.
++      p.commandMode = false; p.inputQueue = []; p.input = sanitize(d);
++    }
+     p.lastInput = this.time;
+   }
+   reload(id) {
+@@ -97,6 +110,47 @@
+       return;
+     p.reload = 1.65;
+     this.emit("effect", { type: "reload", id, x: p.x, y: 1, z: p.z });
++  }
++  // UPDATE: o cano visual acompanha a previsão. Espere o comando de movimento
++  // correspondente antes de validar um tiro, em vez de aumentar seu alcance
++  // permitido ou disparar de uma posição antiga. Entradas antigas continuam.
++  queueShot(id, aim) {
++    const p = this.players.get(id);
++    if (!p || !p.connected || p.hp <= 0 || this.won || this.transition || !aim) return;
++    if (p.commandMode && Number.isSafeInteger(aim.seq) && aim.seq > p.seq) {
++      if (aim.seq > p.commandReceived || !Number.isFinite(aim.yaw) || !Number.isFinite(aim.pitch)) return;
++      p.pendingShots ||= [];
++      if (p.pendingShots.length < 8) p.pendingShots.push({ ...aim, action: "shoot", expires: this.time + 3 });
++    } else this.shoot(id, aim);
++  }
++  queueReload(id, command) {
++    const p = this.players.get(id);
++    if (!p || !p.connected || p.hp <= 0 || this.won || this.transition) return;
++    if (p.commandMode && Number.isSafeInteger(command?.seq) && command.seq > p.seq) {
++      if (command.seq > p.commandReceived) return;
++      p.pendingShots ||= [];
++      if (p.pendingShots.length < 8) p.pendingShots.push({ action: "reload", seq: command.seq, expires: this.time + 3 });
++    } else this.reload(id);
++  }
++  queueInteract(id, command) {
++    const p = this.players.get(id);
++    if (!p || !p.connected || p.hp <= 0 || this.won || this.transition) return;
++    if (p.commandMode && Number.isSafeInteger(command?.seq) && command.seq > p.seq) {
++      if (command.seq > p.commandReceived) return;
++      p.pendingShots ||= [];
++      if (p.pendingShots.length < 8) p.pendingShots.push({ action: "interact", seq: command.seq, expires: this.time + 3 });
++    } else this.interact(id);
++  }
++  confirmedShots(p) {
++    while (p.pendingShots?.length) {
++      const shot = p.pendingShots[0];
++      if (shot.expires < this.time || p.hp <= 0) { p.pendingShots.shift(); continue; }
++      if (shot.seq > p.seq) break;
++      p.pendingShots.shift();
++      if (shot.action === "reload") this.reload(p.id);
++      else if (shot.action === "interact") this.interact(p.id);
++      else this.shoot(p.id, shot);
++    }
+   }
+   shoot(id, aim) {
+     const p = this.players.get(id);
+@@ -283,15 +337,27 @@
+     }
+     this.levelElapsed += dt;
+     for (const p of this.players.values()) {
++      if (this.transition || this.won) break;
+       if (!p.connected) continue;
+-      stepPlayer(
+-        p,
+-        this.time - p.lastInput < 0.5
+-          ? p.input
+-          : { yaw: p.yaw, pitch: p.pitch },
+-        this.world,
+-        dt,
+-      );
++      if (p.commandMode) {
++        // UPDATE: crédito de tempo autoritativo recupera comandos que ficaram
++        // esperando durante um frame lento. Não permite andar mais rápido:
++        // cada passo gasta tempo já transcorrido no servidor (máximo 1 s).
++        p.physicsCredit = Math.min(1, (p.physicsCredit || 0) + dt);
++        while (!this.transition && !this.won && p.inputQueue?.length && p.physicsCredit + 1e-9 >= 1 / 30) {
++          const command = p.inputQueue.shift(); p.input = command;
++          stepPlayer(p, command, this.world, 1 / 30); p.seq = command.seq;
++          this.confirmedShots(p);
++          p.physicsCredit = Math.max(0, p.physicsCredit - 1 / 30);
++        }
++        if (!p.inputQueue?.length && this.time - p.lastInput > 0.5) {
++          p.moving = p.sprinting = false;
++          // Não execute física sem um comando confirmável: gravidade/stamina
++          // seriam contadas de novo quando chegasse o lote atrasado. Clientes
++          // conectados enviam também comandos de repouso; o crédito limitado
++          // recupera todos esses passos quando o transporte volta a responder.
++        }
++      } else stepPlayer(p, this.time - p.lastInput < 0.5 ? p.input : { yaw: p.yaw, pitch: p.pitch }, this.world, dt);
+       if (p.reload > 0) {
+         p.reload -= dt;
+         if (p.reload <= 0) {
+@@ -303,6 +369,7 @@
+       }
+       p.noise = Math.max(0, p.noise - dt);
+     }
++    if (this.transition || this.won) return;
+     this.spawnClock -= dt;
+     if (this.spawnClock <= 0) {
+       this.spawnClock = levelConfig(this.level).spawn;
+@@ -312,6 +379,11 @@
+     const alive = [...this.players.values()].filter(
+       (p) => p.hp > 0 && p.connected,
+     );
++    this.updateMonsters(dt, alive);
++  }
++  // A IA mantém a implementação existente. Separação permite congelar só
++  // as criaturas nos testes, sem esconder seus colliders durante tiros.
++  updateMonsters(dt, alive) {
+     for (const [id, m] of this.monsters) {
+       if (m.hp <= 0) {
+         if (this.time - m.deadAt > 5) this.monsters.delete(id);
+@@ -413,6 +485,7 @@
+       kills: this.kills,
+       level: this.level,
+       mapSeed: this.mapSeed,
++      revision: this.revision,
+       levelElapsed: this.levelElapsed,
+       transition: this.transition ? { ...this.transition } : null,
+       relays: [...this.relays],
+@@ -420,6 +493,7 @@
+       players: [...this.players.values()].map(
+         ({
+           input,
++          inputQueue, pendingShots, commandMode, commandReceived, physicsCredit,
+           lastInput,
+           shotAt,
+           noise,
+--- a/shared/characters.js
++++ b/shared/characters.js
+@@ -0,0 +1,14 @@
++// UPDATE 1.1.1: adicione uma entrada para cada novo personagem. Altura visual
++// não muda o collider, a câmera ou os controles compartilhados do explorador.
++export const CHARACTERS = [
++  { id: "capsule", name: "Explorador original", thumbnail: "/assets/characters/capsule.png", model: null },
++  { id: "vergil", name: "Vergil", thumbnail: "/assets/characters/vergil.png", model: "/assets/models/vergil/model.fbx", height: 1.6, rotationY: 0,
++    aliases: { "combined_image_8914660307.png": "combined_image_8914660307-Photoroom.png" } },
++  { id: "metal-sonic", name: "Metal Sonic", thumbnail: "/assets/characters/metal-sonic.png", model: "/assets/models/metal-sonic/model.fbx", height: 1.6, rotationY: 0,
++    aliases: { "enm_metalsonic_body_abd.png": "enm_metalsonic_body_alb.png" } },
++  { id: "fenomeno", name: "Fenomeno", thumbnail: "/assets/characters/fenomeno.png", model: "/assets/models/fenomeno/model.fbx", height: 1.6, rotationY: 0,
++    materials: { body: "tex_bdy1127_00_diff.png", face: "tex_chr1127_00_face_diff.png", eye: "tex_chr1127_00_eye0.png", hair: "tex_chr1127_00_hair_shad_c.png", tail: "tex_tail0001_00_1127_diff.png" } },
++  { id: "agnes", name: "Agnes Tachyon", thumbnail: "/assets/characters/agnes.png", model: "/assets/models/agnes/model.fbx", height: 1.6, rotationY: 0 },
++];
++export function characterConfig(id) { return CHARACTERS.find((c) => c.id === id) || CHARACTERS[0]; }
++export const MEDKIT = { model: "/assets/models/medkit/model.glb", size: 0.68, rotationY: 0 };
+--- a/shared/config.js
++++ b/shared/config.js
+@@ -1,6 +1,6 @@
+ // NOVO: cor padrão do explorador. Também pode ser escolhida no lobby.
+ export const DEFAULT_PLAYER_COLOR = "#d95948";
+-export const GAME_VERSION = "1.1.0";
++export const GAME_VERSION = "1.1.1";
+ export function playerColor(value) {
+   return typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value)
+     ? value.toLowerCase() : DEFAULT_PLAYER_COLOR;
+--- a/tests/campaign-browser.mjs
++++ b/tests/campaign-browser.mjs
+@@ -34,10 +34,10 @@
+   await mkdir("test-results", { recursive: true });
+   await a.waitForTimeout(1300); await a.screenshot({ path: "test-results/explorers.png" });
+   // Rigs são inspecionados nesta cena; a iluminação Alta é coberta por combat-browser.
+-  const update = sim.update.bind(sim); sim.update = (dt) => { const m = sim.monsters; sim.monsters = new Map(); try { update(dt); } finally { sim.monsters = m; } };
++  const update = sim.updateMonsters.bind(sim); sim.updateMonsters = () => {};
+   for (let type = 0; type < 3; type++) sim.monsters.set("m" + type, { id: "m" + type, type, x: 5 + type * 3, z: 6, yaw: 0, hp: MONSTERS[type].hp, state: "idle", path: [], pathAt: 0, patrolAt: 0, alert: 0, hurt: 0, attack: 0 });
+   await a.waitForTimeout(1200); await a.screenshot({ path: "test-results/creatures-upgraded.png" });
+-  sim.update = update; sim.monsters.clear();
++  sim.updateMonsters = update; sim.monsters.clear();
+   for (let level = 0; level < 4; level++) {
+     assert.equal(sim.level, level); sim.spawnClock = Infinity;
+     await resume(a);
+--- a/tests/combat-browser.mjs
++++ b/tests/combat-browser.mjs
+@@ -46,12 +46,8 @@
+   const sim = room.sim, player = sim.players.get(room.host);
+   sim.spawnClock = Infinity;
+   // Para inspecionar os rigs, congele apenas a IA nesta cena de teste.
+-  const update = sim.update.bind(sim);
+-  sim.update = (dt) => {
+-    const monsters = sim.monsters;
+-    sim.monsters = new Map();
+-    try { update(dt); } finally { sim.monsters = monsters; }
+-  };
++  const update = sim.updateMonsters.bind(sim);
++  sim.updateMonsters = () => {}; // Só IA: tiros confirmados continuam vendo os colliders.
+   Object.assign(player, { x: 8, z: 13, yaw: 0, pitch: 0, input: {} });
+   for (let type = 0; type < 3; type++) {
+     const id = `m${type}`;
+@@ -108,7 +104,7 @@
+   assert.ok(evidence.maximumError < 0.000001, "O tracer deve começar na ponta física do cano");
+   await page.screenshot({ path: "test-results/combat.png" });
+   // Reative IA real e confira um ataque chegando até o HUD.
+-  sim.update = update;
++  sim.updateMonsters = update;
+   sim.monsters.clear();
+   sim.monsters.set("m9", {
+     id: "m9", type: 0, x: player.x, z: player.z - 1,
+--- a/tests/models-browser.mjs
++++ b/tests/models-browser.mjs
+@@ -0,0 +1,83 @@
++import { chromium } from "playwright";
++import { startServer } from "../server/index.js";
++import { CHARACTERS } from "../shared/characters.js";
++import { mkdir, writeFile } from "node:fs/promises";
++import assert from "node:assert/strict";
++const server = await startServer({ port: 0, host: "127.0.0.1" }); let browser; const errors = [], result = [];
++try {
++  browser = await chromium.launch({ headless: true, args: ["--no-sandbox", "--enable-unsafe-swiftshader", "--use-angle=swiftshader"] });
++  const context = await browser.newContext({ viewport: { width: 1000, height: 750 } });
++  const page = await context.newPage();
++  await page.addInitScript(() => localStorage.setItem("echo-quality", "low"));
++  page.on("pageerror", (e) => errors.push(e.message)); page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
++  await page.goto("http://127.0.0.1:" + server.port); await mkdir("test-results", { recursive: true });
++  await page.locator("#choose-character").click();
++  for (const config of CHARACTERS) {
++    await page.locator('[data-character="' + config.id + '"]').click();
++    await page.waitForFunction(() => !document.getElementById("character-confirm").disabled, null, { timeout: 45000 });
++    await page.waitForTimeout(500);
++    await page.locator("#character-preview").screenshot({ path: "test-results/model-" + config.id + ".png" });
++    result.push(await page.evaluate(async (id) => {
++      if (id === "capsule") return { id, preserved: true };
++      const { prepareCharacter, instantiateCharacter } = await import("/js/model-assets.js"), T = await import("three"), { RigAnimation } = await import("/js/rig-animation.js");
++      const template = await prepareCharacter(id), model = instantiateCharacter(template), animation = new RigAnimation(model), initial = new T.Box3().setFromObject(model, true);
++      animation.update({ moving: false, hp: 100 }, 0, 0, true); model.updateMatrixWorld(true);
++      const idle = new T.Box3().setFromObject(model, true), q = animation.roles.leftLeg?.bone.quaternion.clone();
++      animation.update({ moving: true, sprinting: true, hp: 100, y: 0 }, 1 / 30, 0.13, true);
++      const animate = q?.angleTo(animation.roles.leftLeg.bone.quaternion) || 0;
++      animation.update({ hp: 100, y: 0.3 }, 1 / 30, 0.13, true);
++      return { id, size: initial.getSize(new T.Vector3()).toArray(), idleMin: idle.min.toArray(), rig: template.userData.rig, roles: Object.keys(animation.roles), animationAngle: animate, clips: model.animations.length };
++    }, config.id));
++  }
++  for (const model of result.slice(1)) { assert.ok(Math.abs(model.size[1] - 1.6) < 0.001); assert.ok(model.animationAngle > 0.01, model.id + " tem animação"); assert.ok(model.idleMin[1] > -0.2, model.id + " acima do chão"); }
++  // Salvar/recarregar a escolha e iniciar com o FBX real, não um substituto.
++  await page.locator("#character-confirm").click(); await page.reload();
++  assert.ok((await page.locator("#selected-character").textContent()).includes("Agnes"));
++  await page.locator("#connect").click(); await page.locator("#hud").waitFor({ state: "visible", timeout: 45000 });
++  const sim = server.rooms.get(await page.locator("#code").textContent()).sim; sim.spawnClock = Infinity;
++  assert.equal([...sim.players.values()][0].character, "agnes");
++  await page.waitForFunction(() => window.echoDiagnostics().character === "agnes");
++  if (!(await page.evaluate(() => !!document.pointerLockElement))) await page.locator("#resume").click();
++  await page.keyboard.press("v"); await page.waitForFunction(() => window.echoDiagnostics().thirdPerson);
++  // O segundo explorador usa um FBX diferente; ambos precisam ver a escolha.
++  const guest = await page.context().newPage();
++  guest.on("pageerror", e => errors.push(e.message)); guest.on("console", m => { if(m.type()==="error")errors.push(m.text()); });
++  await guest.goto("http://127.0.0.1:"+server.port);
++  await guest.locator("#choose-character").click(); await guest.locator('[data-character="metal-sonic"]').click();
++  await guest.waitForFunction(() => !document.getElementById("character-confirm").disabled, null, {timeout:45000});
++  await guest.locator("#character-confirm").click(); await guest.locator("#join-tab").click();
++  await guest.locator("#room").fill(await page.locator("#code").textContent());
++  await guest.locator("#connect").click(); await guest.locator("#hud").waitFor({state:"visible",timeout:45000});
++  await guest.waitForFunction(() => window.echoDiagnostics().character === "metal-sonic");
++  await guest.waitForFunction(() => window.echoDiagnostics().remoteCharacters.includes("agnes"),null,{timeout:45000});
++  await page.bringToFront();
++  await page.waitForFunction(() => window.echoDiagnostics().remoteCharacters.includes("metal-sonic"),null,{timeout:45000});
++  const host = [...sim.players.values()][0], { supply } = await import("../shared/world.js");
++  let kit; for(let x=-1;x<=1&&!kit;x++)for(let z=-1;z<=1;z++){const item=supply(x,z,sim.mapSeed);if(item.type==="med"){kit=item;break;}}
++  assert.ok(kit); Object.assign(host,{x:kit.x,z:kit.z,hp:40});
++  await page.waitForFunction(()=>Number(document.getElementById("health-text").textContent)===40);
++  if (!(await page.evaluate(() => !!document.pointerLockElement))) await page.locator("#resume").click();
++  await page.keyboard.press("e");
++  for(let i=0;i<100&&!sim.used.has(kit.id);i++) await page.waitForTimeout(50);
++  assert.ok(sim.used.has(kit.id)); assert.equal(host.hp,85,"Modelo novo mantém cura de 45 HP");
++  await page.waitForFunction(()=>Number(document.getElementById("health-text").textContent)===85);
++  await page.keyboard.press("v"); if(!await page.evaluate(()=>window.echoDiagnostics().thirdPerson))await page.keyboard.press("v");
++  const previousAmmo=host.ammo; await page.mouse.down();await page.mouse.up();
++  for(let i=0;i<100&&host.ammo===previousAmmo;i++)await page.waitForTimeout(50);
++  assert.equal(host.ammo,previousAmmo-1,"Pistola do FBX funciona em terceira pessoa");
++  await page.screenshot({path:"test-results/characters-multiplayer.png"});
++  result.push({ multiplayer:true, healing:45, thirdPersonShot:true });
++  const med = await page.evaluate(async () => {
++    const { prepareMedkit, instantiateMedkit } = await import("/js/model-assets.js"), { WorldView } = await import("/js/world-view.js"), { World, supply } = await import("/shared/world.js"), T = await import("three");
++    await prepareMedkit(); const scene = new T.Scene(), world = new World(17), view = new WorldView(scene, world, "low");
++    view.chunkLoader.dispose(); const specs = [];
++    for (let x = -2; x <= 2 && !specs.length; x++) for (let z = -2; z <= 2; z++) if (supply(x, z, 17).type === "med") { view.cx = x; view.cz = z; view.build(x, z); const chunk = view.chunks.get(x + "," + z); specs.push({ oldVisible: chunk.box.visible, medVisible: chunk.medkit.visible, origin: chunk.crate.position.y }); break; }
++    const model = instantiateMedkit(), box = new T.Box3().setFromObject(model, true), materials = []; model.traverse((o) => { if (o.isMesh) materials.push({ map: !!o.material.map, normal: !!o.material.normalMap }); }); view.dispose();
++    const after = instantiateMedkit(); return { size: box.getSize(new T.Vector3()).toArray(), min: box.min.toArray(), specs, materials, stillCached: !!after };
++  });
++  assert.ok(Math.max(...med.size) <= 0.681 && Math.max(...med.size) > 0.67); assert.ok(Math.abs(med.min[1] - 0.004) < 0.0001);
++  assert.equal(med.specs[0].oldVisible, false); assert.equal(med.specs[0].medVisible, true); assert.equal(med.specs[0].origin, 0); assert.ok(med.materials.every((m) => m.map && m.normal));
++  await writeFile("test-results/models-update.json", JSON.stringify({ characters: result, medkit: med, errors }, null, 2));
++  assert.deepEqual(errors, []); console.log("PASS: 5 personagens, texturas, rig, escala, animação, escolha persistente, multiplayer, tiro em terceira pessoa e med kit GLB/45 HP.", JSON.stringify({ result, med }));
++} catch (error) { console.error("MODEL ERRORS", errors); throw error; }
++finally { await browser?.close(); await server.close(); }
+--- a/tests/performance-browser.mjs
++++ b/tests/performance-browser.mjs
+@@ -22,7 +22,7 @@
+   await page.waitForTimeout(3500);
+   await page.evaluate(async () => {
+     const { WorldView } = await import("/js/world-view.js"), original = WorldView.prototype.build;
+-    window.chunkBenchmark = { frame: 0, frames: [], builds: [], drawCalls: [], currentCalls: 0, maxBuildsPerFrame: 0, counts: {}, started: performance.now() };
++    window.chunkBenchmark = { correctionsStart: window.echoDiagnostics().motion.corrections, frame: 0, frames: [], builds: [], drawCalls: [], currentCalls: 0, maxBuildsPerFrame: 0, counts: {}, started: performance.now() };
+     // Conte chamadas reais de desenho, inclusive as instanciadas. O renderer
+     // Three.js instala render() na instância, não no protótipo da classe.
+     for (const name of ["drawArrays", "drawElements", "drawArraysInstanced", "drawElementsInstanced"]) {
+@@ -36,8 +36,8 @@
+       b.builds.push(performance.now() - t); b.counts[b.frame] = (b.counts[b.frame] || 0) + 1;
+       b.maxBuildsPerFrame = Math.max(b.maxBuildsPerFrame, b.counts[b.frame]); return result;
+     };
+-    let last = performance.now();
+-    function sample(t) { const b = window.chunkBenchmark; b.frame++; b.frames.push(t - last); if (b.currentCalls) b.drawCalls.push(b.currentCalls); b.currentCalls = 0; last = t; if (!b.done) requestAnimationFrame(sample); }
++    let last = performance.now(), lastCameraTime = performance.now(), previousCamera = null; window.chunkBenchmark.motionFrames = [];
++    function sample(t) { const b = window.chunkBenchmark; b.frame++; b.frames.push(t - last); const diag = window.echoDiagnostics?.(), sampleTime = performance.now(); if (diag?.camera) { if (previousCamera) b.motionFrames.push({ ms: diag.cameraTime - previousCamera.time, wallMs: sampleTime - lastCameraTime, dx: diag.camera.x - previousCamera.x, dz: diag.camera.z - previousCamera.z }); previousCamera = { ...diag.camera, time: diag.cameraTime }; lastCameraTime = sampleTime; } if (b.currentCalls) b.drawCalls.push(b.currentCalls); b.currentCalls = 0; last = t; if (!b.done) requestAnimationFrame(sample); }
+     requestAnimationFrame(sample);
+   });
+   await page.keyboard.down("d"); await page.keyboard.down("ShiftLeft");
+@@ -47,7 +47,7 @@
+     return { mode: "WebGL por software, 480x320, qualidade Leve", frames: frames.length,
+       medianFrameMs: frames[Math.floor(frames.length/2)], p95FrameMs: frames[Math.floor(frames.length*0.95)],
+       medianDrawCalls: calls[Math.floor(calls.length / 2)],
+-      terrainBuilds: b.builds.length, maxBuildsPerFrame: b.maxBuildsPerFrame,
++      correctionsStart: b.correctionsStart, motionFrames: b.motionFrames, terrainBuilds: b.builds.length, maxBuildsPerFrame: b.maxBuildsPerFrame,
+       maxBuildMs: Math.max(0, ...b.builds), diagnostics: window.echoDiagnostics?.() || null };
+   });
+   result.distance = player.x - 8; assert.ok(result.distance > 35, "Deve cruzar a fronteira durante caminhada");
+@@ -55,6 +55,11 @@
+     assert.ok(result.maxBuildsPerFrame <= 1);
+     assert.ok(result.diagnostics.chunks <= 16); assert.ok(result.diagnostics.pointLights <= 4);
+     assert.equal(result.diagnostics.projectileCapacity, 24);
++    assert.ok(result.diagnostics.workerChunks > 0, "Worker carregou grades antecipadamente");
++    assert.equal(result.diagnostics.motion.corrections, result.correctionsStart, "Previsão/autoridade não divergem ao cruzar chunks após a fixture inicial");
++    const jumps = result.motionFrames.filter((f) => Math.hypot(f.dx, f.dz) > 5.7 * f.ms / 1000 + 0.24);
++    if (jumps.length) console.error("CAMERA JUMPS",jumps);
++    assert.equal(jumps.length, 0, "Câmera percorre a fronteira continuamente, respeitando tempo/velocidade");
+   }
+   await mkdir("test-results", { recursive: true });
+   const name = process.env.ECHO_BASELINE ? "performance-before" : "performance-after";
+--- a/tests/update.test.js
++++ b/tests/update.test.js
+@@ -0,0 +1,113 @@
++import test from "node:test";
++import assert from "node:assert/strict";
++import fs from "node:fs";
++import { createHash } from "node:crypto";
++import * as T from "three";
++import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
++import { Simulation } from "../server/simulation.js";
++import { World, freshPlayer, stepPlayer } from "../shared/world.js";
++import { LocalMotion } from "../client/js/local-motion.js";
++import { CHARACTERS } from "../shared/characters.js";
++import { compactSkeletons } from "../client/js/model-assets.js";
++
++// Rede simulada com atraso/jitter: compare previsão e autoridade após replays.
++test("movimento contínuo: comandos confirmados com jitter e fronteiras positivas/negativas", () => {
++  const sim = new Simulation(17); sim.spawnClock = Infinity;
++  const server = sim.add("host", "QA"), motion = new LocalMotion(new World(17));
++  Object.assign(server, { x: 17.6, z: 17.6 }); motion.reset(server, 0);
++  let now = 0; const packets = [], snapshots = [], pose = {}, errors = [];
++  for (let tick = 1; tick <= 1200; tick++) {
++    now = tick * 1000 / 30;
++    const input = { yaw: 0, pitch: 0, side: tick < 300 ? 1 : -1, forward: 0, jump: tick === 20, sprint: tick < 240 };
++    motion.advance(now + 0.0001, input);
++    const packet = motion.packet(sim.revision); packets.push({ at: tick + 2 + tick % 3, packet });
++    while (packets.length && packets[0].at <= tick) sim.input("host", packets.shift().packet);
++    sim.update(1 / 30);
++    if (tick % 2 === 0) snapshots.push({ at: tick + 3 + tick % 2, state: { ...server } });
++    while (snapshots.length && snapshots[0].at <= tick) {
++      const before = motion.render(now, {}); motion.reconcile(snapshots.shift().state, now); const after = motion.render(now, {});
++      errors.push(Math.hypot(after.x - before.x, after.y - before.y, after.z - before.z));
++    }
++    motion.render(now, pose); assert.ok(!motion.world.blocked(pose.x, pose.z));
++  }
++  assert.ok(server.x < 0, "Cruza fronteira negativa");
++  assert.ok(Math.max(...errors) < 1e-7, "Receber snapshot não teleporta a câmera");
++  assert.ok(motion.stats.maximumError < 1e-7, "Passos iguais eliminam o erro de previsão");
++  assert.ok(motion.history.length < 15, "Histórico confirmado é descartado");
++});
++test("velocidade não muda com FPS; um frame de 400ms não perde tempo", () => {
++  const positions = [];
++  for (const frames of [60, 144, 15]) {
++    const motion = new LocalMotion(new World(17)), p = freshPlayer("p", "QA"); Object.assign(p, { x: 8, z: 17.6 }); motion.reset(p, 0);
++    for (let frame = 1; frame <= frames * 4; frame++) motion.advance(frame * 1000 / frames + 1e-5, { side: 1, yaw: 0 });
++    positions.push(motion.state.x);
++  }
++  assert.ok(Math.max(...positions) - Math.min(...positions) < 1e-8);
++  const motion = new LocalMotion(new World(17)), p = freshPlayer("p", "QA"); motion.reset(p, 0);
++  motion.advance(400.001, { side: 1, yaw: 0 }); assert.equal(motion.history.length, 12);
++});
++test("servidor limita comandos por tick, valida revisão e mantém escolha nos quatro níveis", () => {
++  const sim = new Simulation(17), p = sim.add("p", "QA", "#dd3355", "agnes"); sim.spawnClock = Infinity;
++  sim.input("p", { revision: sim.revision - 1, commands: [{ seq: 1, side: 1 }] }); assert.equal(p.commandMode, undefined);
++  sim.input("p", { revision: sim.revision, commands: Array.from({ length: 30 }, (_, i) => ({ seq: i + 1, side: 1 })) });
++  sim.update(1 / 30); assert.equal(p.seq, 1); assert.equal(p.inputQueue.length, 29);
++  for (let level = 0; level < 4; level++) { sim.loadLevel(level); assert.equal(sim.players.get("p").character, "agnes"); }
++  assert.equal(sim.add("q", "QA", "", "../../oops").character, "capsule");
++});
++test("timestamp antigo de rAF não duplica tempo já processado pelo timer/socket", () => {
++  const motion = new LocalMotion(new World(17)); motion.reset(freshPlayer("p", "QA"), 0);
++  for (let tick = 1; tick <= 300; tick++) {
++    const now = tick * 1000 / 30 + 0.00001;
++    motion.advance(now, { side: 1 }); motion.advance(now - 18, { side: 1 });
++  }
++  assert.equal(motion.sequence, 300);
++});
++test("FBX originais: consolidar ossos repetidos preserva a bind pose e cada vértice amostrado", () => {
++  globalThis.window = { URL: globalThis.URL };
++  const manager = new T.LoadingManager(); manager.addHandler(/.*/, { setPath() { return this; }, load() { return new T.Texture(); } });
++  for (const config of CHARACTERS.filter((c) => c.model)) {
++    const bytes = fs.readFileSync("." + config.model), root = new FBXLoader(manager).parse(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), ""); root.updateMatrixWorld(true);
++    const meshes = []; root.traverse((o) => { if (o.isSkinnedMesh) meshes.push(o); });
++    const samples = meshes.map((mesh) => {
++      mesh.skeleton.update(); const points = [];
++      for (let i = 0; i < mesh.geometry.attributes.position.count; i += 97) points.push([i, mesh.getVertexPosition(i, new T.Vector3()).applyMatrix4(mesh.matrixWorld)]);
++      return points;
++    });
++    const before = new T.Box3().setFromObject(root, true), result = compactSkeletons(root), after = new T.Box3().setFromObject(root, true);
++    assert.ok(before.min.distanceTo(after.min) < 1e-5 && before.max.distanceTo(after.max) < 1e-5, config.name);
++    meshes.forEach((mesh, index) => {
++      mesh.skeleton.update(); for (const [i, point] of samples[index]) assert.ok(point.distanceTo(mesh.getVertexPosition(i, new T.Vector3()).applyMatrix4(mesh.matrixWorld)) < 1e-4, config.name + " vértice " + i);
++    });
++    if (["vergil", "agnes"].includes(config.id)) assert.ok(result.removed > 0);
++  }
++});
++test("modelos e texturas copiados preservam SHA-256 dos arquivos enviados", () => {
++  const manifest = JSON.parse(fs.readFileSync("assets/models/manifest.json"));
++  for (const item of manifest) assert.equal(createHash("sha256").update(fs.readFileSync(item.file)).digest("hex"), item.sha256, item.file);
++});
++
++test("tiro e recarga esperam a posição confirmada; mantêm dano/cadência/munição", () => {
++  const sim = new Simulation(17), p = sim.add("p", "QA"); sim.spawnClock = Infinity;
++  sim.input("p", { revision: sim.revision, commands: Array.from({length:6},(_,i)=>({seq:i+1,side:1,yaw:0,pitch:0})) });
++  sim.queueShot("p", {seq:4,yaw:0,pitch:0,shotId:1}); sim.queueReload("p",{seq:6});
++  for(let i=0;i<3;i++)sim.update(1/30); assert.equal(p.ammo,12);
++  sim.update(1/30); assert.equal(p.ammo,11); assert.equal(p.reload,0);
++  sim.update(1/30); sim.update(1/30); assert.ok(p.reload>0);
++  for(let i=0;i<55;i++)sim.update(1/30);
++  assert.equal(p.ammo,12); assert.equal(p.reserve,59);
++  assert.ok(!("pendingShots" in sim.snapshot().players[0]));
++});
++test("lote atrasado não conta gravidade/stamina duas vezes", () => {
++  const sim=new Simulation(17),p=sim.add("p","QA"),motion=new LocalMotion(new World(17));sim.spawnClock=Infinity;motion.reset(p,0);
++  motion.advance(1000/30+0.001,{side:1,sprint:true,jump:true});sim.input("p",motion.packet(sim.revision));sim.update(1/30);motion.reconcile(p,1000/30);
++  for(let i=0;i<30;i++)sim.update(1/30);
++  motion.advance(1000+1000/30+0.001,{side:1,sprint:true,jump:false});sim.input("p",motion.packet(sim.revision));sim.update(1/30);
++  motion.reconcile(p,1100);assert.ok(motion.stats.maximumError<1e-8);assert.equal(p.seq,motion.sequence);
++});
++test("coleta usa a posição confirmada e mantém 45 HP/uso único", async () => {
++  const {supply,RELAYS}=await import("../shared/world.js"),sim=new Simulation(17),p=sim.add("p","QA");sim.spawnClock=Infinity;
++  let kit;for(let x=-2;x<=2&&!kit;x++)for(let z=-2;z<=2;z++){const s=supply(x,z,17);if(s.type==="med"&&RELAYS.every(r=>Math.hypot(r.x-s.x,r.z-s.z)>5)){kit=s;break;}}
++  Object.assign(p,{x:kit.x,z:kit.z,hp:40});sim.input("p",{revision:sim.revision,commands:Array.from({length:6},(_,i)=>({seq:i+1,yaw:0}))});sim.queueInteract("p",{seq:4});
++  for(let i=0;i<3;i++)sim.update(1/30);assert.equal(p.hp,40);sim.update(1/30);assert.equal(p.hp,85);assert.ok(sim.used.has(kit.id));
++  sim.queueInteract("p",{seq:6});sim.update(1/30);sim.update(1/30);assert.equal(p.hp,85);
++});
